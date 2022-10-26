@@ -1,0 +1,306 @@
+extends /includes/layout
+include /mixins/modal
+block styles
+  include styles
+  link(rel='stylesheet', href='/Croppie/croppie.css')
+block scripts
+  include scripts
+  script(src='/Croppie/croppie.min.js')
+  script.
+    $(document).ready(function(){
+      
+      /*General*/
+      $("#fileUpload").on('change.bs.fileinput',function(e){
+          e.stopPropagation();
+          PictureEditor(".fileinput-preview > img", "colegioPictureResult");
+      });
+      
+      /*Contacto*/
+      ManageContentMod($("#addContact"), ".removeContact", $("#contact-container"), $("#contact-container").find('.contact').first().html(), $('input[name="colegioContactoTotal"]'), 'contact');      
+      
+      /*Profesores*/
+      /*Carga los juegos en la tabla cuando es "confirmado" el modal 'modalNewProfesor'*/
+      /*LoadContentInTable($("#profesoresToAdd").DataTable(), '.checkProfesorToAdd', 'profesorId', 2, 3, 3);
+      
+      $("#addProfesores").on('click',function(){
+        LoadContentInTable($("#profesoresToAdd").DataTable(), '.checkProfesorToAdd', 'profesorId', 2, 3, 3);
+        $("#modalNewProfesor").modal('hide');
+      });*/
+      
+      /*Grados*/
+      /*LoadContentInTable($("#gradosToAdd").DataTable(), '.checkGradoToAdd', 'gradoId', 2, 3, 3);
+      $("#addGrados").on('click',function(){
+        LoadContentInTable($("#gradosToAdd").DataTable(), '.checkGradoToAdd', 'gradoId', 2, 3, 3);
+        $("#modalNewGrado").modal('hide');
+      });*/
+      
+      /*Juegos*/
+      LoadContentInTable($("#gamesToAdd").DataTable(), '.checkGameToAdd', 'gameId', 2, 3, 3);
+      /*Carga los juegos en la tabla cuando es "confirmado" el modal 'modalNewGame'*/
+      $("#addGames").on('click',function(){
+        LoadContentInTable($("#gamesToAdd").DataTable(), '.checkGameToAdd', 'gameId', 2, 3, 3);
+        $("#modalNewGame").modal('hide');
+      });
+    });
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Colegios
+      div.row.dashboard
+        include /flash
+        ul.nav.nav-pills.nav-justified
+          li.active #[a(data-toggle="pill" href="#general") General]
+          li #[a(data-toggle="pill" href="#contact") Contacto]
+          //-li #[a(data-toggle="pill" href="#profesores") Profesores]
+          //-li #[a(data-toggle="pill" href="#grados") Grados]
+          li #[a(data-toggle="pill" href="#juegos") Juegos]
+          
+        form(method="POST" action=colegio.routes.mod autocomplete="nope")#contactForm
+          div.tab-content.dashboard
+            div.tab-pane.fade.in.active#general
+              div.container-fluid
+                div.col-xs-3.col-sm-3.col-md-3#fileUpload
+                  .fileinput.fileinput-new(data-provides='fileinput')
+                    .fileinput-new.thumbnail(style='width: 150px; height: 150px;')
+                      img(src=colegio.dato.profile_picture, alt='Profile picture')
+                    .fileinput-preview.fileinput-exists.thumbnail(style='max-width: 150px; max-height: 150px;')
+                    div.text-center
+                      span.btn.btn-default.btn-file
+                        span.fileinput-new Select image
+                        span.fileinput-exists Change
+                        input(type='file')
+                      a.btn.btn-default.fileinput-exists(href='#', data-dismiss='fileinput') Remove
+                  input(type="hidden" name="colegioPictureResult")
+
+                div.col-md-9
+                  div.form-group
+                    label.control-label(for='colegioName') Nombre
+                    input#colegioName.form-control.input-md(name='colegioName', placeholder='Nombre del colegio', required='', type='text' value=colegio.dato.nombre)
+                  div.form-group
+                    label.control-label(for='colegioAddress') Direccion
+                    input#colegioAddress.form-control.input-sm(name='colegioAddress', placeholder='Direccion', type='text' value=colegio.dato.direction.address)
+                  div.row
+                    div.col-xs-6.col-sm-6.col-md-6
+                      div.form-group
+                        label.control-label(for='colegioCP') CP
+                        input#colegioCP.form-control.input-sm(name='colegioCP', placeholder='Codigo Postal', type='text' value=colegio.dato.direction.cp)
+                    div.col-xs-6.col-sm-6.col-md-6
+                      div.form-group
+                        label.control-label(for='colegioCity') Ciudad
+                        input#colegioCity.form-control.input-sm(name='colegioCity', placeholder='Ciudad', type='text' value=colegio.dato.direction.city)
+                    div.col-xs-6.col-sm-6.col-md-6
+                      div.form-group
+                        label.control-label(for='colegioPais') Pais
+                        input#colegioPais.form-control.input-sm(name='colegioPais', placeholder='Pais', type='text' value=colegio.dato.direction.country)
+                    div.col-xs-6.col-sm-6.col-md-6
+                      div.form-group
+                        label.control-label(for='colegioProv') Provincia
+                        input#colegioProv.form-control.input-sm(name='colegioProv', placeholder='Provincia', type='text' value=colegio.dato.direction.state)
+                    input(type="submit" id="submit-form" class="hidden")
+            
+            div.tab-pane.fade#contact
+              div.container-fluid
+                div.pull-right
+                  button(type="button" title="Nuevo Contacto")#addContact.btn.btn-primary
+                    span.glyphicon.glyphicon-plus(aria-hidden="true")
+                div.row
+                  input#colegioContactoTotal( type='hidden', name='colegioContactoTotal', value=(colegio.dato.contact) ? colegio.dato.contact.length : "0")
+                  div#contact-container
+                    if colegio.dato.contact && colegio.dato.contact.length > 0
+                      each contacto, index in colegio.dato.contact
+                        div.contact
+                          div.pull-right
+                            button(type="button" title="Borrar Contacto" class= (index == 0) ? "hidden" : "visible" ).removeContact.btn.btn-primary
+                              span.glyphicon.glyphicon-minus(aria-hidden="true")
+                          div.clearfix
+                          div.col-md-6
+                            div.form-group
+                              label.control-label(for='colegioContactoNombre') Nombre
+                              input#colegioContactoNombre.form-control(name='colegioContactoNombre', placeholder='Nombre', type='text' value=contacto.nombre)
+                          div.col-md-6
+                            div.form-group
+                              label.control-label(for='colegioContactoApellido') Apellido
+                              input#colegioContactoApellido.form-control(name='colegioContactoApellido', placeholder='Apellido', type='text' value=contacto.apellido)
+                          div.clearfix
+                          div.col-md-6
+                            div.form-group
+                              label.control-label(for='colegioContactoEmail') Email
+                              input#colegioContactoEmail.form-control(name='colegioContactoEmail', placeholder='Email', type='text' value=contacto.email)
+                          div.col-md-6
+                            div.form-group
+                              label.control-label(for='colegioContactoCargo') Cargo
+                              select#colegioContactoCargo.form-control.selectpicker(name='colegioContactoCargo', placeholder='Cargo')
+                                each cargo in colegio.cargos
+                                  if cargo == contacto.cargo
+                                    option(selected="selected")= cargo
+                                  else
+                                    option= cargo
+                          div.clearfix
+                          div.col-md-6
+                            div.form-group
+                              label.control-label(for='colegioContactoTelefono') Telefono
+                              input#colegioContactoTelefono.form-control(name='colegioContactoTelefono', type='tel' value=contacto.phone.p_number)
+                          div.col-md-6
+                            div.form-group
+                              label.control-label(for='colegioContactoFax') Fax
+                              input#colegioContactoFax.form-control(name='colegioContactoFax', type='tel' value=contacto.fax.f_number)
+                          div.clearfix
+                          div.col-md-12.text-center
+                            h3 Social
+                            div.form-group
+                              div.col-md-4
+                                div.input-group
+                                  span.input-group-addon #[span.fa.fa-facebook]
+                                  input#colegioContactoSocialFb.form-control(name='colegioContactoSocialFb', placeholder='Facebook', type='text' value=contacto.social.facebook)
+                              div.col-md-4
+                                div.input-group
+                                  span.input-group-addon #[span.fa.fa-twitter]
+                                  input#colegioContactoSocialTw.form-control(name='colegioContactoSocialTw', placeholder='Twitter', type='text' value=contacto.social.twitter)
+                              div.col-md-4
+                                div.input-group
+                                  span.input-group-addon #[span.fa.fa-skype]
+                                  input#colegioContactoSocialSk.form-control(name='colegioContactoSocialSk', placeholder='Skype', type='text' value=contacto.social.skype)
+                          div.clearfix
+                          hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")
+                    else
+                      div.contact
+                        div.clearfix
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoNombre') Nombre
+                            input#colegioContactoNombre.form-control(name='colegioContactoNombre', placeholder='Nombre', type='text')
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoApellido') Apellido
+                            input#colegioContactoApellido.form-control(name='colegioContactoApellido', placeholder='Apellido', type='text')
+                        div.clearfix
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoEmail') Email
+                            input#colegioContactoEmail.form-control(name='colegioContactoEmail', placeholder='Email', type='text')
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoCargo') Cargo
+                            select#colegioContactoCargo.form-control.selectpicker(name='colegioContactoCargo', placeholder='Cargo')
+                              each cargo in colegio.cargos
+                                option= cargo
+                        div.clearfix
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoTelefono') Telefono
+                            input#colegioContactoTelefono.form-control(name='colegioContactoTelefono', type='tel')
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoFax') Fax
+                            input#colegioContactoFax.form-control(name='colegioContactoFax', type='tel')
+                        div.clearfix
+                        div.col-md-12.text-center
+                          h3 Social
+                          div.form-group
+                            div.col-md-4
+                              div.input-group
+                                span.input-group-addon #[span.fa.fa-facebook]
+                                input#colegioContactoSocialFb.form-control(name='colegioContactoSocialFb', placeholder='Facebook', type='text')
+                            div.col-md-4
+                              div.input-group
+                                span.input-group-addon #[span.fa.fa-twitter]
+                                input#colegioContactoSocialTw.form-control(name='colegioContactoSocialTw', placeholder='Twitter', type='text')
+                            div.col-md-4
+                              div.input-group
+                                span.input-group-addon #[span.fa.fa-skype]
+                                input#colegioContactoSocialSk.form-control(name='colegioContactoSocialSk', placeholder='Skype', type='text')
+                        div.clearfix
+                        hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")
+                          
+            //-div.tab-pane.fade#profesores
+              div.container-fluid
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Profesores disponibles para el colegio.
+                    button(type="button" title="Nuevo Profesor" data-toggle="modal" data-target="#modalNewProfesor").btn.btn-primary.pull-right
+                      span.glyphicon.glyphicon-plus(aria-hidden="true")
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#profesoresToAdd
+                        thead
+                          tr
+                            th Nombre
+                            th Apellido
+                            th(data-toggle="tooltip" data-placement="left" title="Borrar") Remover
+                            th.hidden.input input
+                        tbody
+                          each profesor in colegio.profesores
+                            tr
+                              td= profesor.contact ?  profesor.contact.nombre : ""
+                              td= profesor.contact ? profesor.contact.apellido : ""
+                              td
+                                button(type="button" title="Eliminar").btn.btn-danger.delete-dato #[span.glyphicon.glyphicon-remove(aria-hidden="true")]
+                              td.hidden
+                                input(type="hidden" name="profesorId" value=profesor.id )
+                
+            //-div.tab-pane.fade#grados
+              div.container-fluid
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Grados disponibles para el colegio.
+                    button(type="button" title="Nuevo Grado" data-toggle="modal" data-target="#modalNewGrado").btn.btn-primary.pull-right
+                      span.glyphicon.glyphicon-plus(aria-hidden="true")
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#gradosToAdd
+                        thead
+                          tr
+                            th Grado
+                            th Division
+                            th(data-toggle="tooltip" data-placement="left" title="Borrar") Remover
+                            th.hidden.input input
+                        tbody
+                          each grado in colegio.grados
+                            tr
+                              td= grado.nombre
+                              td= grado.division
+                              td
+                                button(type="button" title="Eliminar").btn.btn-danger.delete-dato #[span.glyphicon.glyphicon-remove(aria-hidden="true")]
+                              td.hidden
+                                input(type="hidden" name="gradoId" value=grado.id )
+                
+            div.tab-pane.fade#juegos
+              div.container-fluid
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Juegos disponibles para el colegio.
+                    button(type="button" title="Nuevo Juego" data-toggle="modal" data-target="#modalNewGame").btn.btn-primary.pull-right
+                      span.glyphicon.glyphicon-plus(aria-hidden="true")
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#gamesToAdd
+                        thead
+                          tr
+                            th Titulo
+                            th Tipo de juego
+                            th(data-toggle="tooltip" data-placement="left" title="Borrar") Remover
+                            th.hidden.input input
+                        tbody
+                          each juego in colegio.juegos
+                            tr
+                              td= juego.title
+                              td= juego.type
+                              td
+                                button(type="button" title="Eliminar").btn.btn-danger.delete-dato #[span.glyphicon.glyphicon-remove(aria-hidden="true")]
+                              td.hidden
+                                input(type="hidden" name="gameId" value=juego.id )
+                            
+          div.pull-right
+            a(href=colegio.routes.root role="button").btn.btn-warning #[i.glyphicon.glyphicon-upload] Volver
+            button.btn.btn-success(type="submit") Actualizar
+
+  //-+ModalAdminAddListWithCheckbox("modalNewProfesor", colegio.lists.profesores, "Nombre", "Apellido", "contact", "contact.apellido", "checkProfesorToAdd", "addProfesores", "nombre")
+  //-+ModalAdminAddListWithCheckbox("modalNewGrado", colegio.lists.grados, "Nombre", "Division", "nombre", "division", "checkGradoToAdd", "addGrados")
+  +ModalAdminAddListWithCheckbox("modalNewGame", colegio.lists.juegos, "Titulo", "Tipo de juego", "title", "type", "checkGameToAdd", "addGames")

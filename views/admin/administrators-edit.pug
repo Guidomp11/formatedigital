@@ -1,0 +1,24 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Usuario: #{administradores.usuario}
+      div.row.dashboard
+        include /flash
+        form.form-horizontal(method="post" autocomplete="nope")
+            if administradores.formEdit
+              | !{administradores.formEdit}
+              div.pull-right
+                a(href=administradores.routes.root).btn.btn-warning Cancelar
+                button.btn.btn-success(type="submit") Actualizar
+            else
+              div.alert.alert-danger No se pudo cargar el formulario.

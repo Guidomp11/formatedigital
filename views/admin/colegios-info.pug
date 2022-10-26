@@ -1,0 +1,174 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles  
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | #{colegio.dato.nombre}
+      div.row.dashboard
+        include /flash
+        ul.nav.nav-pills.nav-justified
+          li.active #[a(data-toggle="pill" href="#general") General]
+          li #[a(data-toggle="pill" href="#contact") Contacto]
+          //-li #[a(data-toggle="pill" href="#profesores") Profesores]
+          //-li #[a(data-toggle="pill" href="#grados") Grados]
+          li #[a(data-toggle="pill" href="#juegos") Juegos]
+          
+        div.tab-content.dashboard
+          div.tab-pane.fade.in.active#general
+            div.container-fluid
+              div.col-xs-3.col-sm-3.col-md-3#fileUpload
+                .div.thumbnail.text-center(style='width: 150px; height: 150px;')
+                  img(src=colegio.dato.profile_picture, alt='Profile picture')
+              div.col-md-9
+                div.form-group
+                  label.control-label(for='colegioName') Nombre
+                  input#colegioName.form-control(type="text" disabled value=colegio.dato.direction ? colegio.dato.direction.nombre : '')
+                div.form-group
+                  label.control-label(for='colegioAddress') Direccion
+                  input#colegioAddress.form-control(type="text" disabled value=colegio.dato.direction ? colegio.dato.direction.address : '')
+                div.row
+                  div.col-xs-6.col-sm-6.col-md-6
+                    div.form-group
+                      label.control-label(for='colegioCP') CP
+                      input#colegioCP.form-control(type="text" disabled value=colegio.dato.direction ? colegio.dato.direction.cp : '')
+                  div.col-xs-6.col-sm-6.col-md-6
+                    div.form-group
+                      label.control-label(for='colegioCity') Ciudad
+                      input#colegioCity.form-control(type="text" disabled value=colegio.dato.direction ? colegio.dato.direction.city : '')
+                  div.col-xs-6.col-sm-6.col-md-6
+                    div.form-group
+                      label.control-label(for='colegioPais') Pais
+                      input#colegioPais.form-control(type="text" disabled value=colegio.dato.direction ? colegio.dato.direction.country : '')
+                  div.col-xs-6.col-sm-6.col-md-6
+                    div.form-group
+                      label.control-label(for='colegioProv') Provincia
+                      input#colegioProv.form-control(type="text" disabled value=colegio.dato.direction ? colegio.dato.direction.state : '')
+          
+          div.tab-pane.fade#contact
+            div.container-fluid
+              div.row
+                div#contact-container
+                  if colegio.dato.contact && colegio.dato.contact.length > 0
+                    each contacto in colegio.dato.contact
+                      div.contact
+                        div.clearfix
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoNombre') Nombre                        
+                            input#colegioContactoNombre.form-control(type="text" disabled value=contacto.nombre)
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoApellido') Apellido
+                            input#colegioContactoApellido.form-control(type="text" disabled value=contacto.apellido)
+                        div.clearfix
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoEmail') Email
+                            input#colegioContactoEmail.form-control(type="text" disabled value=contacto.email)
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoCargo') Cargo
+                            input#colegioContactoCargo.form-control(type="text" disabled value=contacto.cargo)
+                        div.clearfix
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoTelefono') Telefono
+                            input#colegioContactoTelefono.form-control(type="text" disabled value= contacto.phone ? contacto.phone.p_number : "")
+                        div.col-md-6
+                          div.form-group
+                            label.control-label(for='colegioContactoFax') Fax
+                            input#colegioContactoFax.form-control(type="text" disabled value= contacto.fax ? contacto.fax.f_number : "")
+                        div.clearfix
+                        div.col-md-12.text-center
+                          h3 Social
+                          div.form-group
+                            div.col-md-4
+                              div.input-group
+                                span.input-group-addon #[span.fa.fa-facebook]
+                                input#colegioContactoSocialFb.form-control(type="text" disabled value= contacto.social ? contacto.social.facebook : "")
+                            div.col-md-4
+                              div.input-group
+                                span.input-group-addon #[span.fa.fa-twitter]
+                                input#colegioContactoSocialTw.form-control(type="text" disabled value= contacto.social ? contacto.social.twitter : "")
+                            div.col-md-4
+                              div.input-group
+                                span.input-group-addon #[span.fa.fa-skype]
+                                input#colegioContactoSocialSk.form-control(type="text" disabled value= contacto.social ? contacto.social.skype : "")
+                        div.clearfix
+                        hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")
+                  else
+                    div.text-center No hay datos de contacto.
+                      
+          //-div.tab-pane.fade#profesores
+            div.container-fluid
+              if colegio.profesores && colegio.profesores.length > 0
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Profesores disponibles para el colegio.
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#profesoresToAdd
+                        thead
+                          tr
+                            th Nombre
+                            th Apellido
+                        tbody
+                          each profesor in colegio.profesores
+                            tr
+                              td= profesor.contact ? profesor.contact.nombre : "---"
+                              td= profesor.contact ? profesor.contact.apellido : "---"
+              else
+                div.text-center No hay profesores
+              
+          //-div.tab-pane.fade#grados
+            div.container-fluid
+              if colegio.grados && colegio.grados.length > 0
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Grados disponibles para el colegio.
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#gradosToAdd
+                        thead
+                          tr
+                            th Grado
+                            th Division
+                        tbody
+                          each grado in colegio.grados
+                            tr
+                              td= grado.nombre
+                              td= grado.division
+              else
+                div.text-center No hay grados
+              
+          div.tab-pane.fade#juegos
+            div.container-fluid
+              if colegio.juegos && colegio.juegos.length > 0
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Juegos disponibles para el colegio.
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#gamesToAdd
+                        thead
+                          tr
+                            th Titulo
+                            th Tipo de juego
+                        tbody
+                          each juego in colegio.juegos
+                            tr
+                              td= juego.title
+                              td= juego.type
+              else
+                div.text-center No hay juegos.

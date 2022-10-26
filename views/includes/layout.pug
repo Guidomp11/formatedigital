@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title #{title} #{slogan ? "| "+slogan : ""}
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    include styles
+    block styles
+    include scripts
+    block scripts
+  body
+    block navigation
+    div.main-container
+      block content
+    block foot
+      include foot
+      //include template.scripts.pug
+        block scripts

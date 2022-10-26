@@ -1,0 +1,139 @@
+extends /includes/layout
+include /mixins/modal
+block styles
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | #{profesor.contact.nombre}
+      div.row.dashboard
+        include /flash
+        ul.nav.nav-pills.nav-justified
+          li.active #[a(data-toggle="pill" href="#general") General]
+          li #[a(data-toggle="pill" href="#contact") Contacto]
+          li #[a(data-toggle="pill" href="#colegios") Colegios]
+          li #[a(data-toggle="pill" href="#grados") Grados]
+          
+        form(method="POST" autocomplete="nope")
+          div.tab-content.dashboard
+            div.tab-pane.fade.in.active#general
+              div.container-fluid
+                div.col-xs-3.col-sm-3.col-md-3#fileUpload
+                  .fileinput.fileinput-new(data-provides='fileinput')
+                    .fileinput-new.thumbnail(style='width: 150px; height: 150px;')
+                      img(src=profesor.dato.profile_picture, alt='Profile picture')
+                div.col-md-9
+                  div.form-group
+                    label.control-label(for='profesorUser') Usuario
+                    input#profesorUser.form-control.input-md(name='profesorUser', placeholder='Usuario', required='', type='text' disabled value=profesor.dato.usuario readonly)
+                  //-div.form-group
+                    label.control-label(for='profesorPwd') Colegio
+                    div.input-group.has-success
+                      span.input-group-addon#profesorColegio #[span.fa.fa-university(aria-hidden="true")]
+                      div#colegioSelection
+                        input#profesorColegio-input(type="text" required='' aria-describedby="profesorColegio" disabled value= profesor.colegio ? profesor.colegio.name : "").form-control
+            div.tab-pane.fade#contact
+              div.container-fluid
+                div.row
+                  div#contact-container
+                    div.contact
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoNombre') Nombre
+                          input#profesorContactoNombre.form-control(name='profesorContactoNombre', placeholder='Nombre', type='text' disabled value=profesor.contact.nombre)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoApellido') Apellido
+                          input#profesorContactoApellido.form-control(name='profesorContactoApellido', placeholder='Apellido', type='text' disabled value=profesor.contact.apellido)
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoEmail') Email
+                          input#profesorContactoEmail.form-control(name='profesorContactoEmail', placeholder='Email', type='email' disabled value=profesor.contact.email)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoEBirth') Cumpleaños
+                          input#profesorContactoBirth.form-control.form_datetime(name='profesorContactoBirth', placeholder='Cumpleaños', type='text', disabled value=profesor.contact.birth)
+                            
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoTelefono') Telefono
+                          input#profesorContactoTelefono.form-control(name='profesorContactoTelefono', type='tel' disabled value=profesor.contact.phone.p_number)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoFax') Fax
+                          input#profesorContactoFax.form-control(name='profesorContactoFax', type='tel' disabled value=profesor.contact.phone.f_number)
+                      div.clearfix
+                      div.col-md-12.text-center
+                        h3 Social
+                        div.form-group
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-facebook]
+                              input#profesorContactoSocialFb.form-control(name='profesorContactoSocialFb', placeholder='Facebook', type='text' disabled value=profesor.contact.social.facebook)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-twitter]
+                              input#profesorContactoSocialTw.form-control(name='profesorContactoSocialTw', placeholder='Twitter', type='text' disabled value=profesor.contact.social.twitter)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-skype]
+                              input#profesorContactoSocialSk.form-control(name='profesorContactoSocialSk', placeholder='Skype', type='text' disabled value=profesor.contact.social.skype)
+                      div.clearfix
+                      hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")
+                        
+            div.tab-pane.fade#colegios
+              div.container-fluid
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Colegios disponibles para el profesor.
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#colegiosToAdd
+                        thead
+                          tr
+                            th Indice
+                            th Nombre
+                            //-th(data-toggle="tooltip" data-placement="left" title="Borrar") Remover
+                            //-th.hidden.input input
+                        tbody
+                          if profesor.colegios
+                            -var index = 1;
+                            each colegio in profesor.colegios
+                              tr
+                                td= index++
+                                td= colegio.nombre
+                                //-td
+                                  button(type="button" title="Eliminar").btn.btn-danger.delete-dato #[span.glyphicon.glyphicon-remove(aria-hidden="true")]
+                                //-td.hidden
+                                  input(type="hidden" name="colegiosId" value=colegio.id )
+                
+            div.tab-pane.fade#grados
+              div.container-fluid
+                if profesor.grados && profesor.grados.length > 0
+                  div.panel.panel-info
+                    div.panel-heading
+                      h3.panel-title.pull-left Grados disponibles para el profesor.
+                      div.clearfix
+                    div.panel-body
+                      div.table-responsive
+                        table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#gradosToAdd
+                          thead
+                            tr
+                              th Grado
+                              th Division
+                          tbody
+                            each grado in profesor.grados
+                              tr
+                                td= grado.nombre
+                                td= grado.division
+                else
+                  div.text-center No hay grados

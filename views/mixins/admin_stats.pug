@@ -1,0 +1,55 @@
+//---------------------TABLAS----------------------
+
+mixin TableColegios(colegios)
+  if colegios
+    table.table.table-striped
+      thead
+        tr
+          th Indice
+          th Nombre
+          th Activo
+      tbody
+        td ABC
+  else
+    div.alert.alert-warning No hay datos validos.
+      
+mixin TableProfesores(profesores)
+  if profesores
+    table.table.table-striped
+  else
+    div.alert.alert-warning No hay datos validos.
+      
+mixin TableGrados(grados)
+  if grados
+    table.table.table-striped
+  else
+    div.alert.alert-warning No hay datos validos.
+  
+mixin TableAlumnos(alumnos)
+  if alumnos
+    table.table.table-striped
+      thead
+        tr
+          th A
+      tbody
+        td ABC
+  else
+    div.alert.alert-warning No hay datos validos.
+
+//---------------------GRAPHICS---------------------
+
+mixin GraphicColegios(colegios)
+  div
+    | Grafico de colegios
+
+mixin GraphicProfesores(profesores)
+  div
+  | Grafico de profesores
+
+mixin GraphicAlumno(alumnos)
+  div
+  | Grafico de alumnos
+
+mixin GraphicGrados(grados)
+  div
+  | Grafico de grados

@@ -1,0 +1,20 @@
+extends /includes/layout
+block styles
+block scripts
+block navigation
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title Instalado correctamete
+      div.row.dashboard
+        div.container-fluid
+          div.row
+            div.col-md-12.text-center
+              h4 #[strong El sistema ya esta listo para su uso!]
+              br
+              p #[strong Muchas gracias], ahora se puede proceder a disfrutar de la plataforma.
+              p Para acceder por favor ingresar al siguiente #[a(href="/login") link] #[br] y utilizar cualquiera de los datos proporcionados anteriormente.
+          hr
+          div.row
+            div.col-md-12.text-right
+              p En caso de inconvenientes por favor contacte al #[a(href="mailto:"+developer.mail) desarrollador].

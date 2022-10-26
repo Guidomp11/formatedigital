@@ -1,0 +1,83 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles  
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Juegos
+      div.row.dashboard
+        include /flash
+        div.panel.panel-info
+          div.panel-heading
+            div.panel-title.text-right
+              a(href=juegos.routes.add title="Nuevo Juego").btn.btn-default
+                span.glyphicon.glyphicon-plus(aria-hidden="true")
+          div.panel-body
+            if juegos.list && juegos.list.length > 0
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th Titulo
+                      th Etiquetas
+                      th Categoria
+                      th Ruta
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+                  tbody
+                    each juego, index in juegos.list
+                      tr(class=(juego.active ? "success" : "danger"))
+                        td= index
+                        td= juego.title
+                        td= juego.tags
+                        td= juego.type
+                        td= juego.path_root
+                        td= juego.active ? "Si" : "No"
+                        td
+                          form(method="POST")
+                            div.btn-group(role="group")
+                              input(type="hidden" value=juego.id name="gameId")
+                              input(type="hidden" value=juego.active ? "true" : "false" name="gameActive")
+                              a(title="Modificar Juego" href=juegos.routes.root + juego.id + juegos.routes.mod).btn.btn-warning
+                                span.glyphicon.glyphicon-edit(aria-hidden="true")
+                              a(title="Informacion del Juego" href=juegos.routes.root + juego.id).btn.btn-success
+                                span.glyphicon.glyphicon-info-sign(aria-hidden="true")
+                              button(type="button" title="Eliminar Juego" data-toggle="modal" data-target="#modalConfirmDelete" data-id=juego.id).btn.btn-danger
+                                span.glyphicon.glyphicon-remove(aria-hidden="true")
+                              button(type="submit" title="Bloquear Juego" formaction=juegos.routes.block).btn.btn-info
+                                span.glyphicon.glyphicon-ban-circle(aria-hidden="true")
+                  tfoot
+                    tr
+                      th Indice
+                      th Titulo
+                      th Etiquetas
+                      th Categoria
+                      th Ruta
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+            else
+              div.text-center No se encontraron datos
+              
+  if juegos.list && juegos.list.length > 0
+    div.modal.fade#modalConfirmDelete(tabindex="-1")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h4.modal-title Eliminar Juego
+          div.modal-body
+            form(method="POST")
+              input(type="hidden" value="" name="gameId")
+              div.form-group
+                label.control-label ¿Estas seguro que deseas eliminar el juego?
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-default Cancelar
+                button(type="submit" formaction=juegos.routes.del).btn.btn-danger Eliminar

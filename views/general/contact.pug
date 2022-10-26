@@ -1,0 +1,22 @@
+extends ../includes/layout
+block navigation
+  -var selected = 'Contact';
+  include ../includes/navigation
+block content
+  div.container-fluid
+    include /flash
+    div.row
+      div.col-md-12.text-center(style="background-color:#fff")
+        h2 !{title}
+        div.content
+          div.col-md-offset-4
+            div.content-contact.col-md-5
+              h3 Contactenos
+              form(method="POST" action="/")
+                div.form-group
+                  label(for="contactName") Nombre
+                  input(type="text" placeholder="Nombre" name='contactName').form-control
+                div.form-group
+                  label(for="contactEmail") Email
+                  input(type="email" placeholder="Email" name='contactEmail').form-control
+                button(type="submit").btn.btn-success Enviar

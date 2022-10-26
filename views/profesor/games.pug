@@ -1,0 +1,72 @@
+extends /includes/layout
+block scripts
+  script.
+    $(document).ready(function(){
+      $("#games-gallery").on('show.bs.modal', function (event) {
+         var button = $(event.relatedTarget);
+         var game = button.data('game');
+         var modal = $(this);
+         modal.find("#game-title").text(game.title);
+         modal.find("#game-picture").attr('src',game.thumbnail);
+         modal.find("#game-description").text(game.description);
+         var gLink = modal.find("#game-link");
+         if(game.active) {
+           gLink.removeClass("hidden");
+           $(".bootstrap-select").removeClass("hidden");
+           gLink.on('click', function(){
+             var g = $("#select-grade option:selected").text();
+             gLink.attr('href', game.url + g);
+           });
+         }
+         else{
+           gLink.addClass("hidden");
+           $(".bootstrap-select").addClass("hidden");
+         }
+      });
+    });
+block navigation
+  include /includes/navigation
+block content
+  div.container
+    div.row.dashboard-title=text('games')
+    div.row.dashboard
+      div.content
+        include /flash
+        div.row
+          if profesor.grados && profesor.grados.length > 0
+            if profesor.games && profesor.games.length > 0
+              each game in profesor.games
+                div.col-lg-4.col-md-4.col-sm-4.col-xs-12
+                  - var data = {active:  game.active ,url: game.active ? game.url : '', title: game.title, description: game.description, thumbnail: game.thumbnail};
+                  a(href="#" title=game.title data-target="#games-gallery" data-toggle="modal" data-game=data)
+                    div.game-thumbnail(class=!game.active ? 'game-thumbnail-disabled' : '')
+                      img(src=game.thumbnail).img-thumbnail
+                  div.text-center= game.title
+            else
+              div.text-center
+                h3.text-danger=text('no_games')
+          else
+            div.text-center
+              h3.text-danger=text('no_grades')
+  if profesor.games && profesor.games.length > 0
+    div#games-gallery.modal.fade(tabindex="-1" role="dialog")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h3#game-title
+          div.modal-body
+            div.container-fluid
+              div.row
+                div.text-center
+                  img#game-picture.img-thumbnail.img-responsive
+                  div.game-description
+                    div#game-description
+                div.col-md-offset-3.col-md-6.text-center
+                  select.form-control#select-grade
+                    each grado in profesor.grados
+                      option(data-tokens=grado.division)= grado.division
+          div.modal-footer
+            div.text-center
+              a#game-link(rol="button").btn.btn-success=text('play')
+          

@@ -1,0 +1,94 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Administradores
+      div.row.dashboard
+        include /flash
+        if administradores.list && administradores.list.length > 0
+          div.panel.panel-info
+            div.panel-heading
+              div.panel-title.text-right
+                button(type="button" title="Nuevo Usuario" data-toggle="modal" data-target="#modalNewAdmin").btn.btn-primary
+                  span.glyphicon.glyphicon-plus(aria-hidden="true")
+            div.panel-body
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th Usuario
+                      th Email
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+                  tbody
+                    each admin, index in administradores.list
+                      tr(class=(admin.active ? "success" : "danger"))
+                        td !{index}
+                        td !{admin.usuario}
+                        td !{admin.email}
+                        td= admin.active ? "Si" : "No"
+                        td
+                          if index > 0
+                            form(method="POST")
+                              div.btn-group(role="group")
+                                input(type="hidden" value=admin.id name="adminId")
+                                input(type="hidden" value=admin.active ? "true" : "false" name="adminActive")
+                                a(title="Modificar Usuario" href=administradores.routes.root + admin.id + administradores.routes.mod).btn.btn-warning
+                                  span.glyphicon.glyphicon-edit(aria-hidden="true")
+                                button(type="button" title="Eliminar Usuario" data-toggle="modal" data-target="#modalConfirmDelete" data-id=admin.id).btn.btn-danger
+                                  span.glyphicon.glyphicon-remove(aria-hidden="true")
+                                button(type="submit" title="Bloquear Usuario" formaction=administradores.routes.block).btn.btn-info
+                                  span.glyphicon.glyphicon-ban-circle(aria-hidden="true")
+                  tfoot
+                    tr
+                      th Indice
+                      th Usuario
+                      th Email
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+        else
+          div.alert.alert-warning
+            | No hay administradores disponibles
+            
+  if administradores.list && administradores.list.length > 0
+    div.modal.fade#modalConfirmDelete(tabindex="-1")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h4.modal-title Eliminar usuario
+          div.modal-body
+            form(method="POST")
+              input(type="hidden" value="" name="adminId")
+              div.form-group
+                label.control-label ¿Estas seguro que deseas eliminar al usuario?
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-default Cancelar
+                button(type="submit" formaction=administradores.routes.del).btn.btn-danger Eliminar
+            
+    div.modal.fade#modalNewAdmin(tabindex="-1")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h4.modal-title Nuevo usuario
+          div.modal-body
+            form.form-horizontal(method="post" action=administradores.routes.add autocomplete="nope")
+              div.panel-body
+                if administradores.formNew
+                  | !{administradores.formNew}
+                  div.modal-footer
+                    button(type="button" data-dismiss="modal").btn.btn-warning Cancelar
+                    button.btn.btn-success(type="submit") Cargar
+                else
+                  div.alert.alert-danger No se pudo cargar el formulario.

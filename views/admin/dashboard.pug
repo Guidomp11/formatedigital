@@ -1,0 +1,43 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles
+  include styles
+block scripts
+  include scripts
+  script(src='/chart.js/dist/Chart.min.js')
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      include /flash
+      div.row.dashboard-title
+          | Administrador
+      div.row.dashboard.text-center
+        div.col-md-6
+          div.card
+            div.card-title
+              | Colegios
+            div.card-body
+              +GraphicColegios(colegios)
+        div.col-md-6
+          div.card
+            div.card-title
+              | Profesores
+            div.card-body
+              +GraphicProfesores(profesores)
+        div.col-md-6
+          div.card
+            div.card-title
+              | Grados
+            div.card-body
+              canvas.myChart
+              +GraphicGrados(alumnos)
+        div.col-md-6
+          div.card
+            div.card-title
+              | Alumnos
+            div.card-body
+              canvas#myChart
+              +GraphicAlumno(grados)

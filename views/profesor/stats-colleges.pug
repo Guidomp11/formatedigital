@@ -1,0 +1,124 @@
+extends /includes/layout
+block scripts
+  script(src='/datatables.net/js/jquery.dataTables.min.js')
+  script(src='/datatables.net-bs/js/dataTables.bootstrap.min.js')
+  script(src='/js/functions.js')
+  script.
+    $(function() {
+      DataTableProcess('.table-results');
+      /* Row click */
+      $("table > tbody > tr").on('click', function(){
+        var alumnData = $(this).children('td.col-data');
+        var cGrados = alumnData.children('input');
+        var cName = alumnData.find('.col-name').text();
+        var gl = $("#grados-list");
+        
+        gl.data('col-grados', cGrados);
+        gl.data('col-name', cName);
+        gl.modal('show');
+      });
+      
+      /* Modal data */
+      $("#grados-list").on('show.bs.modal', function (event) {
+        var modal = $(this);
+        var dataGrados = $(this).data('col-grados');
+        var dataName = $(this).data('col-name');
+        var listGames = $("#col-games");
+        var listGrados = $("#col-grados");
+        var statsLink = $("#col-stats");
+        var colegioId = "";
+        listGames.empty();
+        listGrados.empty();
+        
+        modal.find("#col-name").text(dataName);
+        var loadGames = false;
+        /*Reviso los grados del colegio seleccionado*/
+        dataGrados.each(function(ix, d) {
+          var dJson = JSON.parse(d.value);
+          
+          /*Reviso los juegos del colegio seleccionado*/
+          if(!loadGames){
+            var dataGames = dJson.colegioGames;
+            $.each(dataGames, function(gKey){
+              var g = dataGames[gKey];
+              listGames.append($('<option>',{
+                value: g.id,
+                text: g.title
+              }));
+            });
+            loadGames = true;
+          }
+          
+          colegioId = dJson.colegioId;          
+          listGrados.append($('<option>',{
+            value: dJson.gradoId,
+            text: dJson.gradoDivision
+          }));
+        });
+        
+        statsLink.on('click', function(e){
+          statsLink.attr('href',window.location + "/" + colegioId + "/" + listGrados.val() + "/"+ listGames.val()); /*Stats del grado*/
+        });
+      });
+    });
+block styles
+  link(rel='stylesheet', href='/datatables.net-bs/css/dataTables.bootstrap.min.css')
+  link(rel='stylesheet', href='/bootstrap-formhelpers/dist/css/bootstrap-formhelpers.min.css')
+block navigation
+  include /includes/navigation
+block content
+  div.container
+    div.row.dashboard-title=text('colleges')
+    div.row.dashboard
+      include /flash
+      div.panel.panel-info
+        div.panel-heading
+          div Estadisticas por colegios
+        div.panel-body
+          if profesor && profesor.colegios && profesor.colegios.length > 0
+            div.table-responsive
+              table.table.table-striped.table-bordered.table-hover.text-center(data-page-length="25").table-results
+                thead
+                  tr
+                    th Indice
+                    th Colegio
+                tbody
+                  -var divisiones = '';
+                  -var index = 1;
+                  each colegio in profesor.colegios
+                    tr
+                      td= index
+                      td.col-data
+                        div.col-name=colegio.datos.nombre
+                        if colegio.grados
+                          each grado in colegio.grados
+                            - var data = {gradoDivision: grado.division, gradoId: grado.id, colegioId: colegio.datos.id, colegioGames: colegio.juegos};
+                            input(type="hidden" value=data)
+                      -index++;
+                tfoot
+                  tr
+                    th Indice
+                    th Colegio
+          else
+            div.text-center No se encontraron datos
+          
+  if profesor && profesor.colegios
+    div#grados-list.modal.fade(tabindex="-1" role="dialog")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h3#col-name
+          div.modal-body
+            div.container-fluid
+              div.form-group
+                div.text-center Grados
+              div.row
+                div.col-md-offset-4.col-md-4
+                  select.form-control#col-games
+                div.col-md-offset-4.col-md-4
+                  select.form-control#col-grados
+          div.modal-footer
+            div.text-center
+              a#col-stats(rol="button").btn.btn-success Ver Estadisticas
+            

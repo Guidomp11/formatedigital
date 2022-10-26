@@ -1,0 +1,741 @@
+const AlumnoSchema = require("./schemes/Alumno");
+const _ = require('lodash');
+
+module.exports = {
+
+    /**
+     * Crea un nuevo alumno en el sistema relacionado a un colegio y un grado
+     * @param usuario Nombre de usuario para ingresar al sistema
+     * @param password Clave del usuario
+     * @param colegioId Id del colegio al que va a pertenecer el alumno
+     * @param gradoId Id del grado donde va a estar asignado el alumno
+     * @param created_by Id del usuario que va a cargar el alumno
+     */
+    //usuario, password, profile_picture, contact, colegioId, gradosId, created_by
+    New: function(usuario, password, profile_picture, colegioId, gradoId, contact, created_by) {
+        let alumno = new AlumnoSchema({
+            usuario: usuario,
+            password: password,
+            profile_picture: profile_picture,
+            colegio_id: colegioId,
+            grado_id: gradoId,
+            contact: contact,
+            created_by: {
+                userId: created_by,
+                date: new Date()
+            }
+        });
+
+        return alumno.unique(usuario).then(function(duplicado) {
+            if (duplicado) return duplicado;
+            else {
+                alumno.save();
+                return false;
+            }
+        });
+    },
+
+    UpdateAdmin: function(alumnoId, password, newPassword, profile_picture, colegioId, gradoId, contact, userId) {
+        return new Promise(function(resolve, reject) {
+            AlumnoSchema.findById(alumnoId).exec().then(function(alumno) {
+
+                let valid = true;
+                alumno.profile_picture = profile_picture;
+                alumno.contact = contact;
+                alumno.colegio_id = colegioId;
+                alumno.grado_id = gradoId;
+                alumno.modifiedy_by.push({
+                    userId: userId,
+                    date: new Date()
+                });
+                if (newPassword && !/^\s*$/.test(newPassword)) {
+                    if (newPassword != alumno.password) {
+                        alumno.passwords_old.push(password)
+                        alumno.password = newPassword;
+                    } else valid = false;
+                }
+                alumno.save();
+                resolve(valid);
+            });
+        });
+    },
+
+    Update: function(alumnoId, password, newPassword, profile_picture, colegioId, gradoId, contact, userId) {
+        return new Promise(function(resolve, reject) {
+            AlumnoSchema.findById(alumnoId).exec().then(function(alumno) {
+
+                return alumno.validPassword(alumnoId, password).then(function(valid) {
+                    if (valid) {
+                        alumno.profile_picture = profile_picture;
+                        alumno.contact = contact;
+                        alumno.colegio_id = colegioId;
+                        alumno.grado_id = gradoId;
+                        alumno.modifiedy_by.push({
+                            userId: userId,
+                            date: new Date()
+                        });
+                        if (newPassword && !/^\s*$/.test(newPassword)) {
+                            if (newPassword != alumno.password) {
+                                alumno.passwords_old.push(password)
+                                alumno.password = newPassword;
+                            }
+                        }
+                        alumno.save();
+                        resolve(valid);
+                    } else {
+                        reject("Las clave no es valida.");
+                    }
+                });
+            });
+        });
+    },
+
+    /**
+     * Desactiva/Activa un alumno
+     * @param alumnoId Id del alumno al cual se va a desactivar/activar
+     * @param state Estado a setearle
+     * @param userId Id del usuario que va a modificar el dato
+     */
+    Block: function(alumnoId, state, userId) {
+        return AlumnoSchema.findByIdAndUpdate(alumnoId, {
+            $set: {
+                active: state
+            },
+            $push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }
+        }).exec();
+    },
+
+    /**
+     * Elimina/deselimina un alumno
+     * @param alumnoId Id del alumno al cual se va a elimina/deselimina
+     * @param state Estado a setearle
+     * @param userId Id del usuario que va a modificar el dato
+     */
+    Delete: function(alumnoId, state, userId, cb) {
+        return AlumnoSchema.findByIdAndUpdate(alumnoId, {
+            $set: {
+                deleted: state
+            },
+            $push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }
+        }).exec();
+    },
+
+    /**
+     * Obtiene una lista de todos los alumnos que hay
+     * Solo retorna el ID y la informacion de contacto
+     */
+    List: function() {
+        return AlumnoSchema.find({
+            deleted: false
+        }).select({
+            _id: 1,
+            usuario: 1,
+            contact: 1,
+            grado_id: 1,
+            colegio_id: 1,
+            stats: 1,
+            active: 1
+        }).exec();
+    },
+
+    /**
+     * Obtiene informacion general del alumno
+     * @param id Id del Profesor
+     */
+    GetInfo: function(id) {
+        return AlumnoSchema.findOne({
+            _id: id,
+            deleted: false
+        }).select({
+            usuario: 1,
+            profile_picture: 1,
+            /*password: 1,*/
+            colegio_id: 1,
+            grado_id: 1,
+            contact: 1
+        }).exec();
+    },
+
+    /**
+     * Obtiene todos los alumnos encontrados en base a los Ids pasados
+     */
+    GetAlumnos: function(idsMap) {
+        return AlumnoSchema.find({
+            "_id": {
+                $in: idsMap
+            }
+        }).select({
+            usuario: 1,
+            colegio_id: 1,
+            grado_id: 1,
+            contact: 1
+        }).exec();
+    },
+
+    /**
+     * Realiza el proceso de logeo en el sistema, como alumno
+     * @param usuario Usuario del alumno
+     * @param password Clave del alumno
+     * @param cb Callback de la operacion, (err,userId) => {}
+     */
+    Login: function(usuario, password, cb) {
+        AlumnoSchema.findOne({
+            usuario: usuario,
+            active: true,
+            deleted: false,
+        }, function(err, user) {
+            if (err) throw err;
+
+            if (!user) cb(err);
+            else {
+                user.comparePassword(password, (err, isMatch) => {
+                    if (err) cb(`No se pudo comprobar la clave ingresada.`);
+                    cb(null, isMatch ? user : null);
+                });
+            }
+        });
+    },
+
+    ResetPassword: function(mail) {
+        //TODO Send mail
+    },
+
+    /**
+     * Setea una nueva clave al alumno
+     * @param alumnoId Id del alumno a actualizar la clave
+     * @param oldPassword Clave actual del alumno
+     * @param newPassword Nueva clave del alumno
+     * @param newRPassword Nueva clave del alumno, again
+     * @param userId Id del usuario que va a modificar el dato
+     */
+    ChangePassword: function(alumnoId, oldPassword, newPassword, newRPassword, userId) {
+        return new Promise(function(resolve, reject) {
+            AlumnoSchema.findById(alumnoId).exec().then(function(alumno) {
+                return alumno.validPassword(alumnoId, oldPassword).then(function(valid) {
+                    if (valid) {
+                        //Se puede operar esos datos
+                        if (newPassword && !/^\s*$/.test(newPassword) && newPassword === newRPassword) {
+                            alumno.modifiedy_by.push({
+                                userId: userId,
+                                date: new Date()
+                            });
+                            if (newPassword != alumno.password) {
+                                alumno.passwords_old.push(oldPassword)
+                                alumno.password = newPassword;
+                            }
+                            alumno.save();
+                            resolve(valid);
+                        } else {
+                            reject("La nueva clave no coincide.");
+                        }
+                    } else {
+                        reject("Las clave no es valida.");
+                    }
+                });
+            });
+        });
+    },
+
+    /**
+     * Obtiene todos los alumnos encontrados segun el profesor y el colegio al que pertenece
+     * Solo recibe 1 colegio y 1 grado. Filtro directo
+     * @param colegioId Id del colegio al que pertenece el alumno
+     * @param gradoId Id del grado del alumno
+     */
+    ListByColegioAndGrado: function(colegioId, gradoId) {
+        return AlumnoSchema.find({
+            colegio_id: colegioId
+        }).select({
+            usuario: 1,
+            active: 1,
+            contact: 1,
+            colegio_id: 1,
+            grado_id: 1,
+            stats: 1
+        }).exec().then(function(alumnos) {
+            if (alumnos && alumnos.length > 0) {
+                let filteredAlumnos = [];
+                _.filter(alumnos, function(alumno) {
+                    if (gradoId.toString() == alumno.grado_id.toString()) {
+                        filteredAlumnos.push(alumno);
+                    }
+                });
+                return filteredAlumnos;
+            }
+        });
+    },
+
+    /**
+     * Obtiene todos los alumnos encontrados segun el profesor y el colegio al que pertenece
+     * Tiene que recibir un conjunto de Id's
+     * @param colegiosId Id de los colegios a buscar
+     * @param gradosId Id de los grados a buscar
+     */
+    ListByColegiosAndGrados: function(colegiosId, gradosId) {
+        //return AlumnoSchema.find({grado_id:gradosId, colegio_id: colegiosId}).exec();
+
+        /*return AlumnoSchema.find({
+            grado_id: gradosId,
+            colegio_id: colegiosId
+        }).select({
+            usuario: 1,
+            contact: 1,
+            colegio_id: 1,
+            grado_id: 1,
+            stats: 1
+        }).exec();*/
+
+        return AlumnoSchema.find({
+            /*colegio_id: colegiosId*/
+            "colegio_id": {
+                $in: colegiosId
+            },
+            "deleted": false
+        }).select({
+            usuario: 1,
+            active: 1,
+            deleted: 1,
+            contact: 1,
+            colegio_id: 1,
+            grado_id: 1,
+            stats: 1
+        }).exec().then(function(alumnos) {
+            if (alumnos && alumnos.length > 0) {
+                let filteredAlumnos = [];
+                _.filter(alumnos, function(alumno) {
+                    if (_.some(gradosId, alumno.grado_id)) {
+                        filteredAlumnos.push(alumno);
+                    }
+                });
+                return filteredAlumnos;
+            }
+        });
+
+        /*return GradoSchema.find({
+            "_id": {
+                $in: idsMap
+            }
+        }).select({
+            _id: 0,
+            division: 1
+        }).exec();*/
+    },
+
+    /**
+     * Setea los datos del alumno (nombre, mail, imagen, etc)
+     * @param alumnoId Id del alumno a actualizar los datos
+     * @param contact Datos del alumno
+     * @param userId Id del usuario que va a modificar el dato
+     */
+    SetContact: function(alumnoId, contact, userId) {
+        return AlumnoSchema.findOneAndUpdate({
+            _id: alumnoId
+        }, {
+            /*$set: {
+                contact: contact
+            },*/
+            $push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }
+        }).exec().then((alumno) => {
+            //Conservo el nombre y el apellido, ya que no son modificables
+            contact.nombre = alumno.contact.nombre;
+            contact.apellido = alumno.contact.apellido;
+            alumno.contact = contact;
+            alumno.save();
+        });
+    },
+
+    /**
+     * Obtiene los datos disponibles del alumno
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     * @param cb Callback de la operacion, (err,contact) => {}
+     */
+    GetContact: function(alumnoId, cb) {
+        AlumnoSchema.findOne({
+            _id: alumnoId
+        }, function(err, alumno) {
+            if (!err && alumno) cb(null, alumno.contact);
+            else cb(`No se encontraron datos en el alumno: ${alumnoId}.`);
+        });
+    },
+
+    /**
+     * Setea la configuracion del alumno (nombre, mail, imagen, etc)
+     * @param alumnoId Id del alumno a actualizar los datos
+     * @param settings Configuracion del alumno (Ver el Schema de Alumno para estructura)
+     * @param userId Id del usuario que va a modificar el dato
+     */
+    SetSettings: function(alumnoId, settings, userId) {
+        return AlumnoSchema.findOneAndUpdate({
+            _id: alumnoId
+        }, {
+            $set: {
+                settings: settings
+            }
+            /*$push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }*/
+        }).exec();
+    },
+
+    /**
+     * Obtiene las configuraciones disponibles del alumno
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     */
+    GetSettings: function(alumnoId) {
+        return AlumnoSchema.findOne({
+            _id: alumnoId
+        }).select({
+            _id: 0,
+            settings: 1
+        }).exec();
+    },
+
+    /**
+     * Actualiza la imagen de perfil del alumno
+     * @param alumnoId Id del alumno a actulizar la imagen
+     * @param picture  Path de la imagen subida al servidor
+     * @param userId   Id  del usuario que modifica el dato
+     */
+    SetProfilePicture: function(alumnoId, picture, userId) {
+        return new Promise(function(resolve, reject) {
+            AlumnoSchema.findById(alumnoId).exec().then(function(alumno) {
+                alumno.profile_picture = picture;
+                alumno.modifiedy_by.push({
+                    userId: userId,
+                    date: new Date()
+                });
+                alumno.save();
+                resolve();
+            });
+        });
+    },
+
+    /**
+     * Setea el colegio del alumno
+     * @param alumnoId Id del alumno a setearle el colegio
+     * @param colegioId Id del colegio a setearle al alumno
+     * @param userId Id del usuario que va a modificar el dato
+     * @param cb Callback de la operacion, (err,alumno) => {}
+     */
+    SetColegio: function(alumnoId, colegioId, userId, cb) {
+        AlumnoSchema.findOneAndUpdate({
+            _id: alumnoId
+        }, {
+            $set: {
+                colegio_id: colegioId
+            },
+            $push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }
+        }, function(err, alumno) {
+            if (!err && alumno) {
+                cb(null, alumno);
+            } else {
+                cb(`Error al intentar setear el colegio al alumno: ${alumnoId}.`);
+            }
+        });
+    },
+
+    /**
+     * Obtiene el colegio_id del alumno
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     */
+    GetColegio: function(alumnoId) {
+        return AlumnoSchema.findOne({
+            _id: alumnoId
+        }).select({
+            colegio_id: 1,
+            _id: 0
+        }).exec();
+    },
+
+    /**
+     * Setea el grado del alumno
+     * @param alumnoId Id del alumno a setearle el colegio
+     * @param gradoId Id del colegio a setearle al alumno
+     * @param userId Id del usuario que va a modificar el dato
+     * @param cb Callback de la operacion, (err,alumno) => {}
+     */
+    SetGrado: function(alumnoId, gradoId, userId, cb) {
+        AlumnoSchema.findOneAndUpdate({
+            _id: alumnoId
+        }, {
+            $set: {
+                grado_id: gradoId
+            },
+            $push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }
+        }, function(err, alumno) {
+            if (!err && alumno) {
+                cb(null, alumno);
+            } else {
+                cb(`Error al intentar setear el grado al alumno: ${alumnoId}.`);
+            }
+        });
+    },
+
+    /**
+     * Obtiene el grado del alumno
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     */
+    GetGrado: function(alumnoId) {
+        AlumnoSchema.findOne({
+            _id: alumnoId
+        }).select({
+            _id: 0,
+            grado_id: 1
+        }).exec();
+    },
+
+    /**
+     * Setea el ranking del alumno
+     * @param alumnoId Id del alumno a setearle el colegio
+     * @param ranking Ranking a setearle al alumno
+     * @param userId Id del usuario que va a modificar el dato
+     * @param cb Callback de la operacion, (err,alumno) => {}
+     */
+    SetRank: function(alumnoId, ranking, userId, cb) {
+        AlumnoSchema.findOneAndUpdate({
+            _id: alumnoId
+        }, {
+            $set: {
+                stats: {
+                    rank: ranking
+                }
+            },
+            $push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }
+        }, function(err, alumno) {
+            if (!err && alumno) {
+                cb(null, alumno);
+            } else {
+                cb(`Error al intentar setear el rank al alumno: ${alumnoId}.`);
+            }
+        });
+    },
+
+    /**
+     * Obtiene el ranking del alumno
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     * @param cb Callback de la operacion, (err,ranking) => {}
+     */
+    GetRank: function(alumnoId, cb) {
+        AlumnoSchema.findOne({
+            _id: alumnoId
+        }, function(err, colegio) {
+            if (!err && colegio) cb(null, alumno.stats.rank);
+            else cb(`No se pudo encontrar el ranking del alumno: ${alumnoId}.`);
+        });
+    },
+
+    /**
+     * Setea los puntos del alumno
+     * @param alumnoId Id del alumno a setearle el colegio
+     * @param puntos puntos a setearle al alumno
+     * @param userId Id del usuario que va a modificar el dato
+     * @param cb Callback de la operacion, (err,alumno) => {}
+     */
+    SetPoints: function(alumnoId, puntos, userId, cb) {
+        AlumnoSchema.findOneAndUpdate({
+            _id: alumnoId
+        }, {
+            $set: {
+                stats: {
+                    points: puntos
+                }
+            },
+            $push: {
+                modifiedy_by: {
+                    userId: userId,
+                    date: new Date()
+                }
+            }
+        }, function(err, alumno) {
+            if (!err && alumno) {
+                cb(null, alumno);
+            } else {
+                cb(`Error al intentar setear los puntos al alumno: ${alumnoId}.`);
+            }
+        });
+    },
+
+    /**
+     * Obtiene los puntos del alumno
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     * @param cb Callback de la operacion, (err,puntos) => {}
+     */
+    GetPoints: function(alumnoId, cb) {
+        AlumnoSchema.findOne({
+            _id: alumnoId
+        }, function(err, colegio) {
+            if (!err && colegio) cb(null, alumno.stats.points);
+            else cb(`No se pudo encontrar los puntos del alumno: ${alumnoId}.`);
+        });
+    },
+
+    /**
+     * Setea las estadisticas de un juego al alumno
+     * @param userId Id del usuario que va a modificar el dato
+     * @param gameId Id del juego a actualizar
+     * @param gameStats Estadisticas del juego
+     */
+    SetGameStats: function(alumnoId, levelId, gameId, gameStats) {
+        //TODO Ver si tiene estadisticas ya, y pisarlas. sino crear un nuevo dato en el array
+        return AlumnoSchema.findById(alumnoId).then(function(alumno) {
+
+            //console.log("Alumno SetGameStats : " , alumno.stats.game_stats);
+            //Modificar alumno
+            //gameStats = JSON.parse(JSON.stringify(gameStats));
+            /*console.log("AlumnoId: ", alumnoId);
+            console.log("LevelId: " , levelId);
+            console.log("GameId: ", gameId);
+            console.log("Stats: " , gameStats);*/
+            if (alumno) {
+                if (alumno.stats && alumno.stats.game_stats && alumno.stats.game_stats.length > 0) { //ALL RIGHT! Hay datos y puedo seguir
+                    //console.log("Ya hay datos...hacer un push");
+                    _.filter(alumno.stats.game_stats, function(o) {
+                        console.log("Game to update: ", gameId);
+                        console.log("Level to update: ", levelId);
+                        //console.log("Filter.... " , o.game_id);
+                        if (o.game_id == gameId) {
+                            console.log("Game exist...");
+                            //Tengo el juego a modificar...
+                            if (o.level[levelId]) {
+                                console.log("Update level");
+                                //Actualizar
+                                o.level[levelId] = gameStats;
+                                //o.level[levelId].wins = gameStats.wins;
+                            } else {
+                                console.log("Is a new level!");
+                                //Insertar
+                                o.level.push(gameStats);
+                            }
+                        } else {
+                            console.log("New game played.");
+                            /*o.level.push({
+                                game_id: gameId,
+                                level: [gameStats]
+                            });*/
+                            alumno.stats.game_stats.push({
+                                game_id: gameId,
+                                level: [gameStats]
+                            });
+                            /*alumno.stats.game_stats.push({
+                                game_id: gameId,
+                                level: [gameStats]
+                            });*/
+                        }
+                    });
+                } else {
+                    console.log("No hay datos, hacer un insert.");
+                    /*alumno.stats = {
+                        game_stats: {
+                            game_id: gameId,
+                            level: [gameStats]
+                        }
+                    }*/
+                    /*$push: {
+                        alumno.stats.game_stats = {
+                            game_id: gameId,
+                            level: [gameStats]
+                        }
+                    }*/
+                    alumno.stats.game_stats.push({
+                        game_id: gameId,
+                        level: [gameStats]
+                    });
+                }
+
+                return alumno.save();
+            }
+        });
+        /*, {
+                    $set: {
+                        deleted: state
+                    },
+                    $push: {
+                        modifiedy_by: {
+                            userId: userId,
+                            date: new Date()
+                        }
+                    }
+                }).exec();*/
+    },
+
+    /**
+     * Obtiene las estadisticas de un juego, del alumno
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     */
+    GetGameStats: function(alumnoId, gameId /*, levelId*/ ) {
+        return AlumnoSchema.findOne({
+            '_id': alumnoId,
+            'stats.game_stats.game_id': gameId
+            /*,
+                      'stats.game_stats.level.level_id': levelId*/
+            /*  "stats.game_stats.game_id": gameId*/
+        }).select({
+            _id: 0,
+            'stats.game_stats.level.$': 1
+        }).exec();
+        /*AlumnoSchema.findOneAndUpdate({
+            _id: alumnoId,
+            "stats.game_stats.game_id": gameId
+        }, function(err, colegio) {
+            if (!err && colegio) cb(null, colegio);
+            else cb(`No pudo obtenerse las estadisticas del juego: ${gameId} para el alumno ${alumnoId}.`);
+        });*/
+    },
+
+    /**
+     * Obtiene las estadisticas de un juego, de varios alumnos (usado en profesor > colegio > stats)
+     * @param alumnoId Id del alumno al cual se requerir la informacion
+     */
+    GetGameStatsByList: function(alumnosId, gameId) {
+        return AlumnoSchema.findOne({
+            "_id": {
+                $in: alumnosId
+            },
+            'stats.game_stats.game_id': gameId
+        }).select({
+            _id: 0,
+            'stats.game_stats.level.$': 1
+        }).exec();
+    },
+
+    Exist: function(usuario) {
+        return AlumnoSchema.count({
+            usuario: usuario
+        }).exec().then(function(alumno) {
+            return alumno > 0;
+        });
+    }
+}

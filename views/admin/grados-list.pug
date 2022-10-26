@@ -1,0 +1,74 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles  
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Grados
+      div.row.dashboard
+        include /flash
+        div.panel.panel-info
+          div.panel-heading
+            div.panel-title.text-right
+              a(href=grados.routes.add title="Nuevo Grado").btn.btn-default
+                span.glyphicon.glyphicon-plus(aria-hidden="true")
+          div.panel-body
+            if grados.list && grados.list.length > 0
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th Division
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+                  tbody
+                    each grado, index in grados.list
+                      tr(class=(grado.active ? "success" : "danger"))
+                        td= index
+                        td= grado.division
+                        td= grado.active ? "Si" : "No"
+                        td
+                          form(method="POST")
+                            div.btn-group(role="group")
+                              input(type="hidden" value=grado.id name="gradoId")
+                              input(type="hidden" value=grado.active ? "true" : "false" name="gradoActive")
+                              a(title="Modificar grado" href=grados.routes.root + grado.id + grados.routes.mod).btn.btn-warning
+                                span.glyphicon.glyphicon-edit(aria-hidden="true")
+                              a(title="Informacion del grado" href=grados.routes.root + grado.id).btn.btn-success
+                                span.glyphicon.glyphicon-info-sign(aria-hidden="true")
+                              button(type="button" title="Eliminar grado" data-toggle="modal" data-target="#modalConfirmDelete" data-id=grado.id).btn.btn-danger
+                                span.glyphicon.glyphicon-remove(aria-hidden="true")
+                              button(type="submit" title="Bloquear grado" formaction=grados.routes.block).btn.btn-info
+                                span.glyphicon.glyphicon-ban-circle(aria-hidden="true")
+                  tfoot
+                    tr
+                      th Indice
+                      th Division
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+            else
+              div.text-center No se encontraron datos
+              
+  if grados.list && grados.list.length > 0
+    div.modal.fade#modalConfirmDelete(tabindex="-1")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h4.modal-title Eliminar grado
+          div.modal-body
+            form(method="POST")
+              input(type="hidden" value="" name="gradoId")
+              div.form-group
+                label.control-label ¿Estas seguro que deseas eliminar el juego?
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-default Cancelar
+                button(type="submit" formaction=grados.routes.del).btn.btn-danger Eliminar

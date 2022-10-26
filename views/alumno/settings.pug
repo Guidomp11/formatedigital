@@ -1,0 +1,56 @@
+extends /includes/layout
+block styles
+  link(rel='stylesheet', href='/bootstrap-toggle/css/bootstrap-toggle.min.css')
+block scripts
+  script(src='/bootstrap-toggle/js/bootstrap-toggle.min.js')
+block navigation
+  include /includes/navigation
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title=text('settings')
+      div.row.dashboard
+        include /flash
+        div#settings-container
+          div.row
+            form(method="POST" autocomplete="nope").form-horizontal
+              div.col-md-6
+                h3.form-group.text-center=text('general')
+                div.form-group
+                  label.control-label.col-sm-5(for='alumnoSettingsNotification')=text('notifications')
+                  div.col-sm-3
+                    input#alumnoSettingsNotification.form-control(name='alumnoSettingsNotification' data-toggle="toggle" data-on=text('yes') data-off=text('no') data-onstyle="success" data-offstyle="danger" checked=alumno.settings.receive_notifications, type='checkbox' value=alumno.settings.receive_notifications ? alumno.settings.receive_notifications : '')
+                div.form-group
+                  label.control-label.col-sm-5(for='alumnoSettingsPrivacy')=text('profile') + ' ' + text('public')
+                  div.col-sm-3
+                    input#alumnoSettingsPrivacy.form-control(name='alumnoSettingsPrivacy', data-toggle="toggle" data-on=text('yes') data-off=text('no') data-onstyle="success" data-offstyle="danger" checked=alumno.settings.public_profile type='checkbox' value=alumno.settings.public_profile ? alumno.settings.public_profile : '')
+                div.form-group
+                  label.control-label.col-sm-5(for='alumnoSettingsLang')=text('language')
+                  div.col-sm-3
+                    select.form-control#alumnoSettingsLang(name='alumnoSettingsLang')
+                      if alumno.languages
+                        each lang in alumno.languages
+                          if alumno.settings.language == lang.value
+                            option(value=lang.value selected)= lang.key
+                          else
+                            option(value=lang.value)= lang.key
+              div.col-md-6
+                h3.form-group.text-center=text('change_password')
+                div.form-group
+                  label.control-label.col-sm-3(for='alumnoSettingsPwd')=text('password') + ' ' + text('current')
+                  div.col-sm-6
+                    input#alumnoSettingsPwd.form-control(name='alumnoSettingsPwd', placeholder=text('password') + ' ' + text('current'), type='password')
+                div.form-group
+                  label.control-label.col-sm-3(for='alumnoSettingsNPwd')=text('new') + ' ' + text('password')
+                  div.col-sm-6
+                    input#alumnoSettingsNPwd.form-control(name='alumnoSettingsNPwd', placeholder=text('new') + ' ' + text('password'), type='password')
+                div.form-group
+                  label.control-label.col-sm-3(for='alumnoSettingsRPwd')=text('repeat') + ' ' + text('password')
+                  div.col-sm-6
+                    input#alumnoSettingsRPwd.form-control(name='alumnoSettingsRPwd', placeholder=text('repeat') + ' ' + text('password'), type='password')
+                      
+              div.clearfix
+              hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")
+              div.text-center
+                a.btn.btn-warning(href=alumno.routes.root role="button")=text('back')
+                button.btn.btn-success(type="submit")=text('update')

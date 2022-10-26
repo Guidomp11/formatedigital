@@ -1,0 +1,20 @@
+{
+	"site": {
+		"titulo": "Colegio",
+		"slogan": "Prueba",
+		"url": "asdhttps://",
+		"contacto": "asd@gmail.com"
+	},
+	"security": {
+		"crypto": {
+			"password": "asd123"
+		},
+		"session": {
+			"secret": "asd123"
+		},
+		"cookies": {
+			"secretKey": "asd123",
+			"encryptKey": "asd123"
+		}
+	}
+}

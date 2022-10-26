@@ -1,0 +1,20 @@
+extends /includes/layout
+block styles
+block scripts
+block navigation
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title Algo no salio bien :(
+      div.row.dashboard
+        div.container-fluid
+          div.row
+            div.col-md-12.text-center
+              h4 #[strong El sistema no pudo ser instalado correctamente!]
+              br
+              p Revise los datos ingresados para la correcta instalacion del sistema.
+              p Para volver a la instalacion ingrese al siguiente #[a(href="/install") link] #[br].
+          hr
+          div.row
+            div.col-md-12.text-right
+              p En caso de inconvenientes por favor contacte al #[a(href="mailto:"+developer.mail) desarrollador].

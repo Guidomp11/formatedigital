@@ -1,0 +1,129 @@
+extends /includes/layout
+block styles
+block scripts
+block navigation
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title Instalacion basica
+      div.row.dashboard
+        include /flash
+        if !error_message || error_message.length == 0
+          div.container-fluid
+            div.row
+              div.col-md-12
+                h4.text-center #[strong Se va a crear datos de ejemplo para poder utilizar el sistema].
+                br
+                div.col-md-offset-1
+                  dl.dl-horizontal
+                    dt Administrador:
+                    dd Permite controlar y administrar el sistema por completo.
+                    br
+                    dt Colegio:
+                    dd Informacion general de un colegio, autoriza y permite organizar alumnos y profesores.
+                    br
+                    dt Profesor:
+                    dd Encargado de un grado (o varios). Puede ver y hacer reportes de sus alumnos.
+                    br
+                    dt Grado:
+                    dd Referencia para identificar los grados de cada colegio y a donde pertenece un alumno.
+                    br
+                    dt Alumno:
+                    dd Tiene acceso al cotenido establecido segun su colegio.
+            hr
+            div.row
+              div.col-md-4.col-md-offset-1
+                p Datos que se puede utilizar para acceder a los distintas areas
+                br
+                p Estos son datos de #[mark prueba] y deben ser #[strong eliminados] al momento de pasar a produccion, en algunos casos solo basta con #[strong cambiar la clave de acceso] para evitar inconvenientes en el futuro.
+              div.col-md-6
+                dl.dl-horizontal
+                  dt Administrador:
+                  dd Usuario: !{install.credenciales.administrador.usuario}
+                  dd Password: !{install.credenciales.administrador.password}
+                  br
+                  dt Colegio:
+                  dd #[em NO USA INFORMACION DE ACCESO]
+                  dd Nombre: #[strong !{install.credenciales.colegio.nombre}]
+                  br
+                  dt Profesor:
+                  dd Usuario: !{install.credenciales.profesor.usuario}
+                  dd Password: !{install.credenciales.profesor.password}
+                  br
+                  dt Grado:
+                  dd #[em NO USA INFORMACION DE ACCESO]
+                  dd Nombre: #[strong !{install.credenciales.grado.nombre}]
+                  br
+                  dt Alumno:
+                  dd Usuario: !{install.credenciales.alumno.usuario}
+                  dd Password: !{install.credenciales.alumno.password}
+              div.clearfix
+              hr
+              form(method="POST" action=install.routes.install autocomplete="nope")
+                div.row
+                  div.col-md-12
+                    h4.text-center Informacion general
+                    div.col-md-6.col-md-offset-3
+                      div.form-group
+                        label.control-label(for='installGeneralTitle') Titulo
+                        input.form-control.input-sm(name='installGeneralTitle', placeholder='Titulo del sitio', required='', type='text')
+                      div.form-group
+                        label.control-label(for='installGeneralSlogan') Slogan
+                        input.form-control.input-sm(name='installGeneralSlogan', placeholder='Slogan del sitio', required='', type='text')
+                      div.form-group
+                        label.control-label(for='installGeneralUrl') Direccion
+                        input.form-control.input-sm(name='installGeneralUrl', placeholder='Url del sitio (sin https)', required='', type='text')
+                      div.form-group
+                        label.control-label(for='installGeneralAdminMail') Email
+                        input.form-control.input-sm(name='installGeneralAdminMail', placeholder='Email de contacto', required='', type='email')
+                div.clearfix
+                hr
+                div.row
+                  div.col-md-12
+                    h4.text-center Seguridad
+                    div.col-md-6.col-md-offset-3
+                      div.form-group
+                        label.control-label(for='securityCrypt') Clave de encriptacion general
+                        input.form-control.input-sm(name='securityCrypt', placeholder='Clave para encriptar textos.', type='text')
+                        span.help-block Utilizada para aplicar una barrera de seguridad a los elementos sensibles mostrados en el front-end.
+                      div.form-group
+                        label.control-label(for='sessionSecret') Frase secreta (Sesion)
+                        input.form-control.input-sm(name='sessionSecret', placeholder='Frase para proteger las sesiones.', type='text')
+                        span.help-block Frase que permite ofuscar la informacion de sesion de cada cuenta.
+                      div.form-group
+                        label.control-label(for='cookieSecret') Frase secreta (Cookie)
+                        input.form-control.input-sm(name='cookieSecret', placeholder='Frase para proteger las cookies.', type='text')
+                        span.help-block Frase que permite ofuscar el contenido de la cookie al usuario.
+                      div.form-group
+                        label.control-label(for='cookieKey') Clave de Cookie
+                        input.form-control.input-sm(name='cookieKey', placeholder='Clave para proteger las cookies.', type='text')
+                        span.help-block Clave para darle una barrera de seguridad a la informacion ofuscada.
+                      div.form-group
+                        p.text-info.text-center #[strong ***Mayor complejidad de cada clave/frase brinda mas seguridad***]
+                div.clearfix
+                hr
+                div.row
+                  div.form-group
+                    p.text-danger.text-center La informacion introducida en este formulario debe permanecer privada en todo momento.
+                  div.form-group.text-center
+                    button.btn.btn-success(type="submit") Instalar
+                //-div.row
+                  div.col-md-12
+                    h4.text-center Informacion de la base de datos.
+                    div.col-md-6.col-md-offset-3
+                      div.form-group
+                        label.control-label(for='installDbName') Nombre
+                        input.form-control.input-sm(name='installDbName', placeholder='Nombre de la base de datos', required='', type='text')
+                      div.form-group
+                        label.control-label(for='installDbHost') Host
+                        input.form-control.input-sm(name='installDbHost', placeholder='Direccion de la base de datos', required='', type='text')
+                      div.form-group
+                        label.control-label(for='installDbPort') Puerto
+                        input.form-control.input-sm(name='installDbPort', placeholder='Puerto de la base de datos', required='', type='text', value="27017")
+                      div.clearfix
+                      hr
+                      div.form-group
+                        p.text-danger.text-center La informacion introducida en este formulario debe permanecer privada en todo momento.
+                      div.form-group.text-center
+                        button.btn.btn-success(type="submit") Instalar
+block foot

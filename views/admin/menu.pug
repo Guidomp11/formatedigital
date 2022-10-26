@@ -1,0 +1,11 @@
+nav.navmenu.navmenu-default.navmenu-fixed-left.offcanvas(role="navigation")
+  div.nav-side-menu
+    a.navmenu-brand(href=url) #{title}
+    div.menu-list
+      ul.nav.navmenu-nav
+        if mainMenu
+          ul.sidebar-menu
+            each key in mainMenu
+              li #[a(href=key.link) #[i(class="fa "+key.icon)] #{key.option}]
+        else
+          p.bg-danger No se pudo cargar el menu de administracion

@@ -1,0 +1,62 @@
+extends /includes/layout
+block navigation
+  include /includes/navigation
+block content
+  div.container
+    div.row.dashboard-title Estadisticas de '#[i !{colegio.nombre}]' para el grado !{colegio.grado.division}
+    div.row.dashboard
+      include /flash
+      if !colegio.stats || colegio.stats.length == 0 || colegio.stats.general.length == 0
+        div.text-center.alert.alert-warning
+          p.text-danger No hay informes disponibles.
+      else
+        div.row
+          div.page-header
+            h1=colegio.juego.title+ ' '
+              small=colegio.juego.type
+          div.col-md-6
+            div.card
+              div.card-title #[span.glyphicon.glyphicon-stats] Promedio
+              div.card-body#chart-prom
+                table.table.table-striped.table-bordered.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Nivel Maximo
+                      th % Aciertos
+                      th % Calculadora
+                  tbody
+                      -var stat = colegio.stats.promedio;
+                      tr
+                        td= colegio.stats.maxLevel
+                        td= stat.aciertos
+                        td= stat.calculadora
+          div.col-md-6
+            div.card
+              div.card-title #[span.fa.fa-gamepad] Estadisticas
+              div.card-body
+                table.table.table-striped.table-bordered.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Nivel
+                      th Intentos
+                      th Victorias
+                      th Calculadora
+                      th Estrellas
+                  tbody
+                      -var stat = colegio.stats.general;
+                      -var lvl = 1;
+                      each s in stat
+                        tr
+                          td= lvl
+                          td= s.attempts
+                          td= s.wins
+                          td= s.calc
+                          td= s.stars
+                        -lvl++;
+                  tfoot
+                    tr
+                      th Nivel
+                      th Intentos
+                      th Victorias
+                      th Calculadora
+                      th Estrellas

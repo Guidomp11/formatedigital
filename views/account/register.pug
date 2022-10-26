@@ -1,0 +1,19 @@
+extends /includes/layout
+block navigation
+  include /includes/navigation
+block content
+  div.account-full-bg
+  div.account-container
+    div.row
+      div.col-md-8.col-center.middle
+        form.account-form.panel.panel-default(action="/register" method="post")
+          div.panel-heading
+            h3.panel-title
+              | Registrarse en !{title}
+          div.panel-body
+            | !{form}
+            button.btn.btn-lg.btn-success.btn-block(type="submit") Registrarse
+            div.form-group
+            | Tienes cuenta? #[a(href="login") Ingresa!]
+          if error_message
+            include /flash

@@ -1,0 +1,137 @@
+extends /includes/layout
+include /mixins/modal
+block styles
+  include styles
+block scripts
+  include scripts
+  //-script.
+    $(document).ready(function(){            
+      /*Colegio*/
+      $("#addColegio").on('click',function(){
+        LoadOptionInElement($("#colegioSelection"), '.checkColegioToAdd', 'colegioId', 2, $("#gradoColegio-input"));
+        $("#modalAddColegio").modal('hide');
+      });
+      
+      /*Profesor*/
+      $("#addProfesor").on('click',function(){
+        LoadOptionInElement($("#profesorSelection"), '.checkProfesorToAdd', 'profesorId', 2, $("#gradoProfesor-input"));
+        $("#modalAddProfesor").modal('hide');
+      });
+      
+      /*Alumnos*/
+      $("#addAlumnos").on('click',function(){
+        LoadContentInTable($("#alumnosToAdd").DataTable(), '.checkAlumnoToAdd', 'alumnosId', 2, 3, 3);
+        $("#modalAddAlumno").modal('hide');
+      });
+      
+      /*Juegos*/
+      $("#addJuegos").on('click',function(){
+        LoadContentInTable($("#juegosToAdd").DataTable(), '.checkJuegoToAdd', 'juegosId', 2, 3, 3);
+        $("#modalAddJuegos").modal('hide');
+      });
+    });
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title= grado.dato.nombre
+      div.row.dashboard
+        include /flash
+        //-ul.nav.nav-pills.nav-justified
+          li.active #[a(data-toggle="pill" href="#general") General]
+          li #[a(data-toggle="pill" href="#alumnos") Alumnos]
+          li #[a(data-toggle="pill" href="#juegos") Juegos]
+          
+        form(method="POST" action=grado.routes.mod autocomplete="nope")
+          div.tab-content.dashboard
+            div.tab-pane.fade.in.active#general
+              div.container-fluid
+                div.col-md-12
+                  div.form-group
+                    label.control-label(for='gradoNombre') Nombre
+                    input#gradoNombre.form-control.input-md(name='gradoNombre', placeholder='Nombre', required='', type='text', value=grado.dato.nombre)
+                  div.form-group
+                    label.control-label(for='gradoDivision') Division
+                    input#gradoDivision.form-control.input-sm(name='gradoDivision', placeholder='Division', required='', type='text', value=grado.dato.division)
+                  //-div.form-group
+                    label.control-label(for='gradoColegio') Colegio
+                    div.input-group.has-success
+                      span.input-group-addon#gradoColegio #[span.fa.fa-university(aria-hidden="true")]
+                      div#colegioSelection
+                        input#gradoColegio-input(type="text" placeholder="Seleccione un colegio" required='' aria-describedby="gradoColegio" data-toggle="modal" data-target="#modalAddColegio" value= grado.colegio ? grado.colegio.name : "").form-control      
+                        input(type="hidden" name="colegioId" value= grado.colegio ? grado.colegio.id : "")
+                  //-div.form-group
+                    label.control-label(for='gradoProfesor') Profesor
+                    div.input-group.has-success
+                      span.input-group-addon#gradoProfesor #[span.fa.fa-user(aria-hidden="true")]
+                      div#profesorSelection
+                        input#gradoProfesor-input(type="text" placeholder="Seleccione un profesor" required='' aria-describedby="gradoProfesor" data-toggle="modal" data-target="#modalAddProfesor" value= grado.profesor ? grado.profesor.contact.nombre : "").form-control
+                        input(type="hidden" name="profesorId" value= grado.profesor ? grado.profesor.id : "")
+            
+            //-div.tab-pane.fade#alumnos
+              div.container-fluid
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Alumnos disponibles para el grado.
+                    button(type="button" title="Agregar Grado" data-toggle="modal" data-target="#modalAddAlumno").btn.btn-primary.pull-right
+                      span.glyphicon.glyphicon-plus(aria-hidden="true")
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#alumnosToAdd
+                        thead
+                          tr
+                            th Nombre
+                            th Apellido
+                            th(data-toggle="tooltip" data-placement="left" title="Borrar") Remover
+                            th.hidden.input input
+                        tbody
+                          if grado.alumnos
+                            each alumno in grado.alumnos
+                              tr
+                                td= alumno.contact ? alumno.contact.nombre : "---"
+                                td= alumno.contact ? alumno.contact.apellido : "---"
+                                td
+                                  button(type="button" title="Eliminar").btn.btn-danger.delete-dato #[span.glyphicon.glyphicon-remove(aria-hidden="true")]
+                                td.hidden
+                                  input(type="hidden" name="alumnosId" value=alumno.id )
+                
+            //-div.tab-pane.fade#juegos
+              div.container-fluid
+                div.panel.panel-info
+                  div.panel-heading
+                    h3.panel-title.pull-left Juegos disponibles para el grado.
+                    button(type="button" title="Agregar Juego" data-toggle="modal" data-target="#modalAddJuegos").btn.btn-primary.pull-right
+                      span.glyphicon.glyphicon-plus(aria-hidden="true")
+                    div.clearfix
+                  div.panel-body
+                    div.table-responsive
+                      table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#juegosToAdd
+                        thead
+                          tr
+                            th Titulo
+                            th Tipo de juego
+                            th(data-toggle="tooltip" data-placement="left" title="Borrar") Remover
+                            th.hidden.input input
+                        tbody
+                          if grado.juegos
+                            each juego in grado.juegos
+                              tr
+                                td= juego.title
+                                td= juego.type
+                                td
+                                  button(type="button" title="Eliminar").btn.btn-danger.delete-dato #[span.glyphicon.glyphicon-remove(aria-hidden="true")]
+                                td.hidden
+                                  input(type="hidden" name="juegosId" value=juego.id )
+                            
+          div.pull-right
+            a(href=grado.routes.root role="button").btn.btn-warning #[i.glyphicon.glyphicon-upload] Volver
+            button.btn.btn-success(type="submit") Cargar
+
+  //-+ModalAdminAddListWithRadio("modalAddColegio", grado.lists.colegios, "Nombre", "nombre", "checkColegioToAdd", "addColegio", "nombre")
+  //-+ModalAdminAddListWithRadioComplex("modalAddProfesor", grado.lists.profesores, "Nombre", "contact", "nombre", "Apellido", "contact", "apellido", "checkProfesorToAdd", "addProfesor")
+  
+  //-+ModalAdminAddListWithCheckboxComplex("modalAddAlumno", grado.lists.alumnos, "Nombre", "contact", "nombre", "Apellido", "contact", "apellido", "checkAlumnoToAdd", "addAlumnos")
+  //-+ModalAdminAddListWithCheckbox("modalAddJuegos", grado.lists.juegos, "Titulo", "Tipo de juego", "title", "type", "checkJuegoToAdd", "addJuegos")

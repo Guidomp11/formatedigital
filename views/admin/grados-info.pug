@@ -1,0 +1,88 @@
+extends /includes/layout
+include /mixins/modal
+block styles
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | #{grado.dato.nombre}
+      div.row.dashboard
+        include /flash
+        ul.nav.nav-pills.nav-justified
+          //-li.active #[a(data-toggle="pill" href="#general") General]
+          //-li #[a(data-toggle="pill" href="#alumnos") Alumnos]
+          //-li #[a(data-toggle="pill" href="#juegos") Juegos]
+          
+        form()
+          div.tab-content.dashboard
+            div.tab-pane.fade.in.active#general
+              div.container-fluid
+                div.col-md-12
+                  div.form-group
+                    label.control-label(for='gradoNombre') Nombre
+                    input#gradoNombre.form-control.input-md(type="text" disabled value=grado.dato.nombre)
+                  div.form-group
+                    label.control-label(for='gradoDivision') Division
+                    input#gradoDivision.form-control.input-sm(type="text" disabled value=grado.dato.division)
+                  //-div.form-group
+                    label.control-label(for='gradoColegio') Colegio
+                    div.input-group.has-success
+                      span.input-group-addon#gradoColegio #[span.fa.fa-university(aria-hidden="true")]
+                      div#colegioSelection
+                        input#gradoColegio-input(type="text" required='' aria-describedby="gradoColegio" disabled value= grado.colegio ? grado.colegio.name : "").form-control      
+                  //-div.form-group
+                    label.control-label(for='gradoProfesor') Profesor
+                    div.input-group.has-success
+                      span.input-group-addon#gradoProfesor #[span.fa.fa-user(aria-hidden="true")]
+                      div#profesorSelection
+                        input#gradoProfesor-input(type="text" required='' aria-describedby="gradoProfesor" disabled value= grado.profesor).form-control
+            
+            //-div.tab-pane.fade#alumnos
+              div.container-fluid
+                if grado.alumnos && grado.alumnos.length > 0
+                  div.panel.panel-info
+                    div.panel-heading
+                      h3.panel-title.pull-left Alumnos disponibles para el grado.
+                      div.clearfix
+                    div.panel-body
+                      div.table-responsive
+                        table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#alumnosToAdd
+                          thead
+                            tr
+                              th Nombre
+                              th Apellido
+                          tbody
+                            each alumno in grado.alumnos
+                              tr
+                                td= alumno.contact ? alumno.contact.nombre : "---"
+                                td= alumno.contact ? alumno.contact.apellido : "---"
+                else
+                  div.text-center No hay alumnos
+                
+            //-div.tab-pane.fade#juegos
+              div.container-fluid
+                if grado.juegos && grado.juegos.length > 0
+                  div.panel.panel-info
+                    div.panel-heading
+                      h3.panel-title.pull-left Juegos disponibles para el grado.
+                      div.clearfix
+                    div.panel-body
+                      div.table-responsive
+                        table.table.table-hover.text-center.display(cellspacing="0" width="100%" data-page-length="25").table-results#juegosToAdd
+                          thead
+                            tr
+                              th Titulo
+                              th Tipo de juego
+                          tbody
+                            each juego in grado.juegos
+                              tr
+                                td= juego.title
+                                td= juego.type
+                else
+                  div.text-center No hay juegos

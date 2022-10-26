@@ -1,0 +1,518 @@
+extends ../includes/template.layout.pug
+block navigation
+    .mask-l(style='background-color: #fff; width: 100%; height: 100%; position: fixed; top: 0; left:0; z-index: 9999999;')
+    header
+        .container.b-header__box.b-relative
+            a.b-left.b-logo(href='/')
+                img.color-theme(data-retina='', src='img/template/logo.png', alt='Logo')
+
+            div.collapse.navbar-collapse#navigation
+                unless auth
+                    include ../includes/notlogged
+                if menu
+                    //-var selected = 'Home';
+                    //-unless selected
+                      -var selected = text('home');
+                    ul.nav.navbar-nav.navbar-right
+                        //-each val, key in menu
+                          if selected === key
+                            li.active #[a(href=val, title=key)= key]
+                          else
+                            li #[a(href=val, title=key)= key]
+                        if auth
+                            include ../includes/logged
+
+            //-
+              <div class="b-header-r b-right b-header-r--icon">
+              <div class="b-top-nav-show-slide f-top-nav-show-slide b-right j-top-nav-show-slide"><i class="fa fa-align-justify"></i></div>
+              <nav class="b-top-nav f-top-nav b-right j-top-nav">
+              <ul class="b-top-nav__1level_wrap">
+              <li class="b-top-nav__1level f-top-nav__1level is-active-top-nav__1level f-primary-b"><a href="#"> <i class="fa fa-home b-menu-1level-ico"></i><span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+              <a href="#"><i class="fa fa-folder-open b-menu-1level-ico"></i><span class="b-ico-dropdown"> <i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+              <a href="#"><i class="fa fa-picture-o b-menu-1level-ico"> </i> <span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+              <a href="#"><i class="fa fa-code b-menu-1level-ico"></i> <span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b b-top-nav-big">
+              <a href="#"><i class="fa fa-cloud-download b-menu-1level-ico"> </i>Pages<span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b b-top-nav-big">
+              <a href="#"><i class="fa fa-inbox b-menu-1level-ico"></i> <span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+              <a href="#"><i class="fa fa-list b-menu-1level-ico"></i> <span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+              <a href="#"><i class="fa fa-folder-open b-menu-1level-ico"></i> <span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              <li class="b-top-nav__1level f-top-nav__1level f-primary-b b-top-nav-big">
+              <a href="#"><i class="fa fa-folder-open b-menu-1level-ico"></i> <span class="b-ico-dropdown"><i class="fa "></i></span></a>
+              </li>
+              </ul>
+              </nav>
+              </div>
+    .j-menu-container
+    .l-main-container
+        // COMINEZA SLIDER
+        .b-slidercontainer.b-slider
+            .j-fullscreenslider.j-arr-hide
+                ul
+                    // SLIDE 1
+                    li(data-transition='slotfade-vertical', data-slotamount='7')
+                        .tp-bannertimer
+                        img(data-retina='', src='img/template/slider/slider-education.jpg')
+                        .caption.lft.caption-left(data-x='left', data-y='150', data-hoffset='60', data-speed='700', data-start='2000')
+                            .b-slider-lg-info-l__item-title.f-slider-lg-info-l__item-title.b-slider-lg-info-l__item-title-tertiary.b-bg-slider-lg-info-l__item-title
+                                h1.f-primary-b Videos juegos educativos
+                                h2.f-primary-l para la clase de matemática
+                        .caption.lfl.caption-left(data-x='left', data-y='270', data-speed='1000', data-start='2600')
+                            //-
+                              <div class="b-slider-lg-info-l__item-link f-slider-lg-info-l__item-link">
+                              <a href="#" class="b-slider-lg-info-l__item-anchor f-slider-lg-info-l__item-anchor f-primary-b">conozca mas a fondo nuestras propuestas</a>
+                              <span class="b-slider-lg-info-l__item-link-after"><i class="fa fa-chevron-right"></i></span>
+                              </div>
+                    // FIN SLIDE 1
+                    // SLIDE 2
+                    li(data-transition='slotfade-vertical', data-slotamount='7')
+                        .tp-bannertimer
+                        img(data-retina='', src='img/template/slider/slider-ed-1.jpg')
+                        .caption.lft.caption-left(data-x='left', data-y='150', data-hoffset='60', data-speed='700', data-start='2000')
+                            .b-slider-lg-info-l__item-title.f-slider-lg-info-l__item-title.b-slider-lg-info-l__item-title-tertiary.b-bg-slider-lg-info-l__item-title
+                                h1.f-primary-b Un espacio para aprender en el aula
+                                h2.f-primary-l
+                                    | imaginando, discutiendo y analizando
+                        //-
+                          <div class="caption lfl caption-left"  data-x="left" data-y="270" data-speed="1000" data-start="2600">
+                          <div class="b-slider-lg-info-l__item-link f-slider-lg-info-l__item-link">
+                          <a href="#" class="b-slider-lg-info-l__item-anchor f-slider-lg-info-l__item-anchor f-primary-b">Tecnología al servicio de nuestros niños</a>
+                          <span class="b-slider-lg-info-l__item-link-after"><i class="fa fa-chevron-right"></i></span>
+                          </div>
+                          </div>
+                    // FIN SLIDE 2
+                    // SLIDE 3
+                    li(data-transition='slotfade-vertical', data-slotamount='7')
+                        .tp-bannertimer
+                        img(data-retina='', src='img/template/slider/slider-ed-2.jpg')
+                        .caption.lft.caption-left(data-x='left', data-y='150', data-hoffset='60', data-speed='700', data-start='2000')
+                            .b-slider-lg-info-l__item-title.f-slider-lg-info-l__item-title.b-slider-lg-info-l__item-title-tertiary.b-bg-slider-lg-info-l__item-title
+                                h1.f-primary-b Propuestas didácticas
+                                h1.f-primary-l en formato digital
+                        .caption.lfl.caption-left(data-x='left', data-y='270', data-speed='1000', data-start='2600')
+                            //-
+                              <div class="b-slider-lg-info-l__item-link f-slider-lg-info-l__item-link">
+                              <a href="#" class="b-slider-lg-info-l__item-anchor f-slider-lg-info-l__item-anchor f-primary-b">Una linda bajada</a>
+                              <span class="b-slider-lg-info-l__item-link-after"><i class="fa fa-chevron-right"></i></span>
+                              </div>
+                    // FIN SLIDE 3
+        // FIN SLIDER
+        // COMINEZAN ICONOS DE PRESENTACION DINAMICOS
+        section.b-bg-full-primary
+            .container
+                .b-categories-icons
+                    .b-categories-icons__item.f-categories-icons__item.b-column
+                        a.b-categories-icons__item_link
+                            .b-categories-icons__item_icon.f-categories-icons__item_icon.fade-in-animate
+                                i.fa.fa-laptop
+                            .b-remaining.b-categories-icons__item_text
+                                .b-categories-icons__item_name.f-categories-icons__item_name.f-secondary-b Digital
+                                .b-categories-icons__item_info.f-categories-icons__item_info.f-secondary-l
+                                    | Se habilitan formas simultáneas de representación (gráfico, numérico, verbal) que enriquecen la elaboración de sentidos en juego
+                    .b-categories-icons__item.f-categories-icons__item.b-column
+                        a.b-categories-icons__item_link
+                            .b-categories-icons__item_icon.f-categories-icons__item_icon.fade-in-animate
+                                i.fa.fa-cogs
+                            .b-remaining.b-categories-icons__item_text
+                                .b-categories-icons__item_name.f-categories-icons__item_name.f-secondary-b Cooperativo
+                                .b-categories-icons__item_info.f-categories-icons__item_info.f-secondary-l Se favorecen los intercambios entre alumnos y con el docente
+                    .b-categories-icons__item.f-categories-icons__item.b-column
+                        a.b-categories-icons__item_link
+                            .b-categories-icons__item_icon.f-categories-icons__item_icon.fade-in-animate
+                                i.fa.fa-puzzle-piece
+                            .b-remaining.b-categories-icons__item_text
+                                .b-categories-icons__item_name.f-categories-icons__item_name.f-secondary-b Interactivo
+                                .b-categories-icons__item_info.f-categories-icons__item_info.f-secondary-l Proceso productivo entre el alumno y el juego mediado por el recurso informático
+                    .b-categories-icons__item.f-categories-icons__item.b-column
+                        a.b-categories-icons__item_link
+                            .b-categories-icons__item_icon.f-categories-icons__item_icon.fade-in-animate
+                                i.fa.fa-search
+                            .b-remaining.b-categories-icons__item_text
+                                .b-categories-icons__item_name.f-categories-icons__item_name.f-secondary-b Exploración
+                                .b-categories-icons__item_info.f-categories-icons__item_info.f-secondary-l
+                                    | Actividad de indagación necesaria para el proceso de construcción de un conocimiento
+        // CIERRAN ICONOS DE PRESENTACION DINAMICOS
+        // COMINEZA CATALOGO DE JUEGOS
+        section.b-infoblock.f-center
+            .container
+                h2.f-secondary-l
+                    | nuestros
+                    strong.f-secondary-b juegos
+                    |  educativos
+                //-p.b-infoblock-description.f-desc-section.f-secondary-l.f-small
+                    | Reprehendunt in, quo ea esse civibus suavitate. Pro
+                    | gubergren persecuti moderatius, id laudem vix, an eos. Adversarium principes.
+                .b-some-examples.f-some-examples.f-secondary.row
+                    .col-sm-4.col-xs-12
+                        .b-some-examples__item.f-some-examples__item
+                            .b-some-examples__item_img.view.view-sixth
+                                img.j-data-element(data-animate='fadeInDown', data-retina='', src='img/template/juego_1.jpg', alt='')
+                                //-.b-item-hover-action.f-center.mask
+                                    .b-item-hover-action__inner
+                                        .b-item-hover-action__inner-btn_group
+                                            a.b-btn.f-btn.b-btn-light.f-btn-light.info
+                                                i.fa.fa-link
+                            .b-some-examples__item_info
+                                .b-some-examples__item_info_level.b-some-examples__item_name.f-some-examples__item_name
+                                    | Juegos olimpicos
+                                .b-some-examples__item_info_level.b-some-examples__item_double_info.f-some-examples__item_double_info
+                                    .b-remaining Para alumnos: 2º ciclo
+                                .b-some-examples__item_info_level.b-some-examples__item_description.f-some-examples__item_description
+                                    | Proporcionalidad en el contexto de las medidas de longitud.
+                            //-.b-some-examples__item_action
+                                .b-right
+                                    a.b-btn.f-btn.b-btn-sm.f-btn-sm.b-btn-default.f-secondary-b(href='education_detail.html') Solicitar
+                                //- <div class="b-remaining b-some-examples__item_total f-some-examples__item_total">$5000/ mes</div>
+                    .col-sm-4.col-xs-12
+                        .b-some-examples__item.f-some-examples__item
+                            .b-some-examples__item_img.view.view-sixth
+                                img.j-data-element(data-animate='fadeInDown', data-retina='', src='img/template/juego_2.jpg', alt='')
+                                //-.b-item-hover-action.f-center.mask
+                                    .b-item-hover-action__inner
+                                        .b-item-hover-action__inner-btn_group
+                                            a.b-btn.f-btn.b-btn-light.f-btn-light.info
+                                                i.fa.fa-link
+                            .b-some-examples__item_info
+                                .b-some-examples__item_info_level.b-some-examples__item_name.f-some-examples__item_name
+                                    | Matematicas Grand Prix.
+                                .b-some-examples__item_info_level.b-some-examples__item_double_info.f-some-examples__item_double_info
+                                    .b-remaining Para alumnos: 2º ciclo
+                                .b-some-examples__item_info_level.b-some-examples__item_description.f-some-examples__item_description
+                                    | Proporcionalidad en el contexto del porcentaje.
+                            //-.b-some-examples__item_action
+                                .b-right
+                                    a.b-btn.f-btn.b-btn-sm.f-btn-sm.b-btn-default.f-secondary-b(href='education_detail.html') Solicitar
+                                //- <div class="b-remaining b-some-examples__item_total f-some-examples__item_total">$1750/ mes</div>
+                    .col-sm-4.col-xs-12
+                        .b-some-examples__item.f-some-examples__item
+                            .b-some-examples__item_img.view.view-sixth
+                                img.j-data-element(data-animate='fadeInDown', data-retina='', src='img/template/juego_3.jpg', alt='')
+                                //-.b-item-hover-action.f-center.mask
+                                    .b-item-hover-action__inner
+                                        .b-item-hover-action__inner-btn_group
+                                            a.b-btn.f-btn.b-btn-light.f-btn-light.info
+                                                i.fa.fa-link
+                            .b-some-examples__item_info
+                                .b-some-examples__item_info_level.b-some-examples__item_name.f-some-examples__item_name
+                                   | Tesoro perdido
+                                .b-some-examples__item_info_level.b-some-examples__item_double_info.f-some-examples__item_double_info
+                                    .b-remaining Para alumnos: 2º ciclo
+                                .b-some-examples__item_info_level.b-some-examples__item_description.f-some-examples__item_description
+                                    | Proporcionalidad en el contexto de las medidas de peso.
+                            //-.b-some-examples__item_action
+                                .b-right
+                                    a.b-btn.f-btn.b-btn-sm.f-btn-sm.b-btn-default.f-secondary-b(href='education_detail.html') Solicitar
+                                //- <div class="b-remaining b-some-examples__item_total f-some-examples__item_total">$4200/ mes</div>
+        // CIERRA CATALOGO DE JUEGOS
+        // COMIENZA PROMO
+        section.b-bg-block.f-bg-block.b-bg-block-education
+            .container.f-center
+                h1.f-secondary-b Proponemos video juegos para la clase de matemática ¿Qué hay detrás?
+                .b-bg-block__desc.f-bg-block__desc.f-secondary
+                    | Un video juego es una secuencia didáctica en la que el trabajo de chicos y docente se va entramando hasta que finalmente afloran relaciones nodales relativas a un concepto matemático. La podemos pensar como un pequeño viaje hacia la producción de ideas.
+                //
+                  <a class="b-btn f-btn b-btn-md f-btn-md b-btn-primary f-primary-sb j-data-element" data-animate="shake" ><i class="fa fa-desktop"></i> Ver Demo</a>
+                span.clearfix.visible-xs-block
+                a.b-btn.f-btn.b-btn-md.f-btn-md.f-primary-sb.j-data-element(data-animate='shake' href='/contact')  Contactar
+        // CIERRA PROMO
+        // COMIENZA BLOG DE NOTICIAS (SIN PROGRAMAR)
+        //-section.b-infoblock.b-diagonal-line-bg-light.f-secondary
+            //-.container
+                h2.f-center.f-secondary-l
+                    | ¿Qué
+                    strong.f-secondary-b nuevas noticas
+                    |  hay en
+                    strong Formate Digital
+                    | ?
+                p.b-infoblock-description.f-desc-section.f-center.f-employee__desc.f-small
+                    | Reprehendunt in, quo ea esse civibus
+                    | suavitate. Pro gubergren persecuti moderatius, id laudem vix, an eos. Adversarium principes.
+                .b-carousel-primary
+                    .j-carousel-primary
+                        .b-carousel-primary__item
+                            .b-news-item.f-news-item
+                                .hidden-xs.b-news-item__img.view.view-sixth
+                                    img(data-retina='', src='img/template/homepage/news_1.png', alt='')
+                                    .b-item-hover-action.f-center.mask
+                                        .b-item-hover-action__inner
+                                            .b-item-hover-action__inner-btn_group
+                                                a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='blog_detail_right_slidebar.html')
+                                                    i.fa.fa-link
+                                .b-news-item__info
+                                    .b-news-item__info_title.f-news-item__info_title.f-primary-b Vestibulum accumsan
+                                    .b-news-item__info_additional
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-calendar-o
+                                            |  22, February
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-comments
+                                            |  2 comments
+                                    .b-news-item__info_text.f-news-item__info_text
+                                        | Vestibulum accumsan habitasse dictum id ut Curabitur amet libero mauris condimentum. Ut in lobortis
+                                        | nulla sed augueuisque aenean
+                                    a.f-news-item__info_more.f-more.f-secondary-b(href='blog_detail_right_slidebar.html')
+                                        | Read more
+                                        i.fa.fa-chevron-circle-right
+                        .b-carousel-primary__item
+                            .b-news-item.f-news-item
+                                .hidden-xs.b-news-item__img.view.view-sixth
+                                    img(data-retina='', src='img/template/homepage/news_1.png', alt='')
+                                    .b-item-hover-action.f-center.mask
+                                        .b-item-hover-action__inner
+                                            .b-item-hover-action__inner-btn_group
+                                                a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='blog_detail_right_slidebar.html')
+                                                    i.fa.fa-link
+                                .b-news-item__info
+                                    .b-news-item__info_title.f-news-item__info_title.f-primary-b Vestibulum accumsan
+                                    .b-news-item__info_additional
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-calendar-o
+                                            |  22, February
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-comments
+                                            |  2 comments
+                                    .b-news-item__info_text.f-news-item__info_text
+                                        | Vestibulum accumsan habitasse dictum id ut Curabitur amet libero mauris condimentum. Ut in lobortis
+                                        | nulla sed augueuisque aenean
+                                    a.f-news-item__info_more.f-more.f-secondary-b(href='blog_detail_right_slidebar.html')
+                                        | Read more
+                                        i.fa.fa-chevron-circle-right
+                        .b-carousel-primary__item
+                            .b-news-item.f-news-item
+                                .hidden-xs.b-news-item__img.view.view-sixth
+                                    img(data-retina='', src='img/template/homepage/news_1.png', alt='')
+                                    .b-item-hover-action.f-center.mask
+                                        .b-item-hover-action__inner
+                                            .b-item-hover-action__inner-btn_group
+                                                a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='blog_detail_right_slidebar.html')
+                                                    i.fa.fa-link
+                                .b-news-item__info
+                                    .b-news-item__info_title.f-news-item__info_title.f-primary-b Vestibulum accumsan
+                                    .b-news-item__info_additional
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-calendar-o
+                                            |  22, February
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-comments
+                                            |  2 comments
+                                    .b-news-item__info_text.f-news-item__info_text
+                                        | Vestibulum accumsan habitasse dictum id ut Curabitur amet libero mauris condimentum. Ut in lobortis
+                                        | nulla sed augueuisque aenean
+                                    a.f-news-item__info_more.f-more.f-secondary-b(href='blog_detail_right_slidebar.html')
+                                        | Read more
+                                        i.fa.fa-chevron-circle-right
+                        .b-carousel-primary__item
+                            .b-news-item.f-news-item
+                                .hidden-xs.b-news-item__img.view.view-sixth
+                                    img(data-retina='', src='img/template/homepage/news_2.png', alt='')
+                                    .b-item-hover-action.f-center.mask
+                                        .b-item-hover-action__inner
+                                            .b-item-hover-action__inner-btn_group
+                                                a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='blog_detail_right_slidebar.html')
+                                                    i.fa.fa-link
+                                .b-news-item__info
+                                    .b-news-item__info_title.f-news-item__info_title.f-primary-b Vestibulum accumsan
+                                    .b-news-item__info_additional
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-calendar-o
+                                            |  22, February
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-comments
+                                            |  2 comments
+                                    .b-news-item__info_text.f-news-item__info_text
+                                        | Vestibulum accumsan habitasse dictum id ut Curabitur amet libero mauris condimentum. Ut in lobortis
+                                        | nulla sed augueuisque aenean
+                                    a.f-news-item__info_more.f-more.f-secondary-b(href='blog_detail_right_slidebar.html')
+                                        | Read more
+                                        i.fa.fa-chevron-circle-right
+                        .b-carousel-primary__item
+                            .b-news-item.f-news-item
+                                .hidden-xs.b-news-item__img.view.view-sixth
+                                    img(data-retina='', src='img/template/homepage/news_1.png', alt='')
+                                    .b-item-hover-action.f-center.mask
+                                        .b-item-hover-action__inner
+                                            .b-item-hover-action__inner-btn_group
+                                                a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='blog_detail_right_slidebar.html')
+                                                    i.fa.fa-link
+                                .b-news-item__info
+                                    .b-news-item__info_title.f-news-item__info_title.f-primary-b Vestibulum accumsan
+                                    .b-news-item__info_additional
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-calendar-o
+                                            |  22, February
+                                        span.f-news-item__info_additional_item.b-news-item__info_additional_item
+                                            i.fa.fa-comments
+                                            |  2 comments
+                                    .b-news-item__info_text.f-news-item__info_text
+                                        | Vestibulum accumsan habitasse dictum id ut Curabitur amet libero mauris condimentum. Ut in lobortis
+                                        | nulla sed augueuisque aenean
+                                    a.f-news-item__info_more.f-more.f-secondary-b(href='blog_detail_right_slidebar.html')
+                                        | Read more
+                                        i.fa.fa-chevron-circle-right
+        // CIERRA BLOG DE NOTICIAS
+        // COMIENZA DATA
+        //-
+          <section class="b-about-container f-about-container b-bg-gradient b-about-container__with-img-l">
+          <div class="container">
+          <div class="b-about-container__img"><img class="j-data-element" data-animate="fadeInUp" data-retina src="img/template/estudiante.png" alt=""/></div>
+          <div class="b-about-container__inner j-data-element" data-animate="fadeInRight">
+          <div class="b-about-container__title f-about-container__title f-secondary-b">Aprender de manera entretenida</div>
+          <div class="b-about-container__title_second f-about-container__title_second f-secondary-l">¿Estás buscando nuevos y mejores metodos de enseñar?
+          </div>
+          <div class="b-about-container__text f-about-container__text f-secondary-l">
+          Proponemos video juegos para la clase de matemática ¿Qué hay detrás? Un video juego es una secuencia didáctica en la que el trabajo de chicos y docente se va entramando hasta que finalmente afloran relaciones nodales relativas a un concepto matemático.
+          </div>
+          <a class="f-more f-secondary-b" href="#">Leer más <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+          </div>
+          </section>
+        // CIERRA DATA
+        // COMIENZA LA SECCION DE LOS INTEGRANTES
+        section.b-infoblock.b-diagonal-line-bg-light.b-employee
+            .container
+                h3.f-center.f-secondary-b SOMOS FormateDigital
+                h2.b-infoblock-description.f-center.f-secondary-l Conoce a nuestro equipo
+                .b-employee-container.row
+                    .col-md-3.col-sm-4.col-xs-12
+                        .b-employee-item.b-employee-item--color.f-employee-item
+                            .view.view-sixth
+                                img.j-data-element(data-animate='fadeInDown', data-retina='', src='img/template/team/user1.jpg', alt='').img-responsive.img-thumbnail
+                                //-.b-item-hover-action.f-center.mask
+                                    .b-item-hover-action__inner
+                                        .b-item-hover-action__inner-btn_group
+                                            a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='about_us_meet_our_team_detail.html')
+                                                i.fa.fa-link
+                            h4.f-primary-b Uriel Bertolini
+                            .b-employee-item__position.f-employee-item__position Coordinador y Profesor en Tecnicatura en Desarrollo de Videojuegos, y Emprendedor
+                            //- p Consetetur sadipscing elitrd diam nonumy eirmod tempor invidunt ut labore.
+                            // Redes Sociales
+                            //-
+                              <div class="b-employee-item__social">
+                              <a href="#" class="b-employee-item__social_btn"><i class="fa fa-twitter"></i></a>
+                              <a href="#" class="b-employee-item__social_btn"><i class="fa fa-google-plus"></i></a>
+                              <a href="#" class="b-employee-item__social_btn"><i class="fa fa-thumbs-up"></i></a>
+                              </div>
+                            // Fin Redes Sociales
+                    .col-md-3.col-sm-4.col-xs-12
+                        .b-employee-item.b-employee-item--color.f-employee-item
+                            .view.view-sixth
+                                img.j-data-element(data-animate='fadeInDown', data-retina='', src='img/template/team/user2.jpg', alt='').img-responsive.img-thumbnail
+                                //-.b-item-hover-action.f-center.mask
+                                    .b-item-hover-action__inner
+                                        .b-item-hover-action__inner-btn_group
+                                            a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='about_us_meet_our_team_detail.html')
+                                                i.fa.fa-link
+                            h4.f-primary-b Dra Patricia Sadovsky 
+                            .b-employee-item__position.f-employee-item__position Formadora docente e Investigadora en Didáctica de la Matemática
+                            br
+                            // Fin Redes Sociales
+                    .col-md-3.col-sm-4.col-xs-12
+                        .b-employee-item.b-employee-item--color.f-employee-item
+                            .view.view-sixth
+                                img.j-data-element(data-animate='fadeInDown', data-retina='', src='img/template/team/user3.jpg', alt='').img-responsive.img-thumbnail
+                                //-.b-item-hover-action.f-center.mask
+                                    .b-item-hover-action__inner
+                                        .b-item-hover-action__inner-btn_group
+                                            a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='about_us_meet_our_team_detail.html')
+                                                i.fa.fa-link
+                            h4.f-primary-b Prof. M Mónica Becerril
+                            .b-employee-item__position.f-employee-item__position Formadora docente e Investigadora en Didáctica de la Matemática
+                            br
+                            // Fin Redes Sociales
+                    .col-md-3.col-sm-4.col-xs-12.hidden-xs.hidden-sm
+                        .b-employee-item.b-employee-item--color.f-employee-item
+                            .view.view-sixth
+                                img.j-data-element(data-animate='fadeInDown', data-retina='', src='img/template/team/user4.jpg', alt='').img-responsive.img-thumbnail
+                                //-.b-item-hover-action.f-center.mask
+                                    .b-item-hover-action__inner
+                                        .b-item-hover-action__inner-btn_group
+                                            a.b-btn.f-btn.b-btn-light.f-btn-light.info(href='about_us_meet_our_team_detail.html')
+                                                i.fa.fa-link
+                            h4.f-primary-b Nicolas Perez
+                            .b-employee-item__position.f-employee-item__position Desarrollador de sistemas y Tecnico en Video juegos
+                            br
+                            // Redes Sociales
+                            //-
+                              <div class="b-employee-item__social">
+                              <a href="#" class="b-employee-item__social_btn"><i class="fa fa-twitter"></i></a>
+                              <a href="#" class="b-employee-item__social_btn"><i class="fa fa-google-plus"></i></a>
+                              <a href="#" class="b-employee-item__social_btn"><i class="fa fa-thumbs-up"></i></a>
+                              </div>
+                            // Fin Redes Sociales
+        // CIERRA LA SECCION DE LOS INTEGRANTES
+    footer
+        .container
+            .b-footer-secondary.row
+                .col-md-6.col-sm-12.col-xs-12.f-center.b-footer-logo-containter
+                    a(href='')
+                        img.b-footer-logo.color-theme(data-retina='', src='img/template/logo.png', alt='Logo')
+                    .b-footer-logo-text.f-footer-logo-text
+                        p Seguinos en nuestras redes sociales.
+                        .b-btn-group-hor.f-btn-group-hor
+                            a.b-btn-group-hor__item.f-btn-group-hor__item(href='#')
+                                i.fa.fa-twitter
+                            a.b-btn-group-hor__item.f-btn-group-hor__item(href='#')
+                                i.fa.fa-facebook
+                            //-a.b-btn-group-hor__item.f-btn-group-hor__item(href='#')
+                                i.fa.fa-behance
+                //-.col-md-3.col-sm-12.col-xs-12
+                    h4.f-primary-b Ultimas Noticias
+                    .b-blog-short-post.row
+                        .b-blog-short-post__item.col-md-12.col-sm-4.col-xs-12.f-primary-b
+                            .b-blog-short-post__item_text.f-blog-short-post__item_text
+                                a(href='blog_detail_left_slidebar.html') Título de noticia actual
+                            .b-blog-short-post__item_date.f-blog-short-post__item_date
+                                | Marzo 10, 2017
+                        .b-blog-short-post__item.col-md-12.col-sm-4.col-xs-12.f-primary-b
+                            .b-blog-short-post__item_text.f-blog-short-post__item_text
+                                a(href='blog_detail_left_slidebar.html') Título de noticia vieja
+                            .b-blog-short-post__item_date.f-blog-short-post__item_date
+                                | Febrero 15, 2016
+                        .b-blog-short-post__item.col-md-12.col-sm-4.col-xs-12.f-primary-b
+                            .b-blog-short-post__item_text.f-blog-short-post__item_text
+                                a(href='blog_detail_left_slidebar.html') Título de noticia antigua
+                            .b-blog-short-post__item_date.f-blog-short-post__item_date
+                                | Enero 20, 2016
+                .col-md-offset-2.col-md-3.col-sm-12.col-xs-12
+                    h4.f-primary-b Contactenos
+                    .b-contacts-short-item-group
+                        //-.b-contacts-short-item.col-md-12.col-sm-4.col-xs-12
+                            .b-contacts-short-item__icon.f-contacts-short-item__icon.f-contacts-short-item__icon_lg.b-left
+                                i.fa.fa-map-marker
+                            .b-remaining.f-contacts-short-item__text
+                                //br
+                                //|                 Calle 1234, CABA,
+                                //br
+                                //|                 Argentina.
+                                //br
+                        //-.b-contacts-short-item.col-md-12.col-sm-4.col-xs-12
+                            .b-contacts-short-item__icon.f-contacts-short-item__icon.b-left.f-contacts-short-item__icon_md
+                                i.fa.fa-skype
+                            .b-remaining.f-contacts-short-item__text.f-contacts-short-item__text_phone
+                                | Skype: FormateDigital
+                        .b-contacts-short-item.col-md-12.col-sm-4.col-xs-12
+                            .b-contacts-short-item__icon.f-contacts-short-item__icon.b-left.f-contacts-short-item__icon_xs
+                                i.fa.fa-envelope
+                            .b-remaining.f-contacts-short-item__text.f-contacts-short-item__text_email
+                                a(href='/contact') FormateDigital
+        .b-footer-primary
+            .container
+                .row
+                    .col-sm-4.col-xs-12.f-copyright.b-copyright Copyright FormateDigital© 2017 - Todos los derechos reservados
+                    .col-sm-8.col-xs-12
+                        .b-btn.f-btn.b-btn-default.b-right.b-footer__btn_up.f-footer__btn_up.j-footer__btn_up
+                            i.fa.fa-chevron-up
+    include ../includes/template.scripts.pug

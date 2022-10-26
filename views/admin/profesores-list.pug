@@ -1,0 +1,76 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles  
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Profesores
+      div.row.dashboard
+        include /flash
+        div.panel.panel-info
+          div.panel-heading
+            div.panel-title.text-right
+              a(href=profesores.routes.add title="Nuevo Profesor").btn.btn-default
+                span.glyphicon.glyphicon-plus(aria-hidden="true")
+          div.panel-body
+            if profesores.list && profesores.list.length > 0
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th Nombre
+                      th Apellido
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+                  tbody
+                    each profesor, index in profesores.list
+                      tr(class=(profesor.active ? "success" : "danger"))
+                        td= index
+                        td= profesor.contact ? profesor.contact.nombre : "---"
+                        td= profesor.contact ? profesor.contact.apellido : "---"
+                        td= profesor.active ? "Si" : "No"
+                        td
+                          form(method="POST")
+                            div.btn-group(role="group")
+                              input(type="hidden" value=profesor.id name="profesorId")
+                              input(type="hidden" value=profesor.active ? "true" : "false" name="profesorActive")
+                              a(title="Modificar Profesor" href=profesores.routes.root + profesor.id + profesores.routes.mod).btn.btn-warning
+                                span.glyphicon.glyphicon-edit(aria-hidden="true")
+                              a(title="Informacion del Profesor" href=profesores.routes.root + profesor.id).btn.btn-success
+                                span.glyphicon.glyphicon-info-sign(aria-hidden="true")
+                              button(type="button" title="Eliminar Profesor" data-toggle="modal" data-target="#modalConfirmDelete" data-id=profesor.id).btn.btn-danger
+                                span.glyphicon.glyphicon-remove(aria-hidden="true")
+                              button(type="submit" title="Bloquear Profesor" formaction=profesores.routes.block).btn.btn-info
+                                span.glyphicon.glyphicon-ban-circle(aria-hidden="true")
+                  tfoot
+                    tr
+                      th Indice
+                      th Nombre
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+            else
+              div.text-center No se encontraron datos
+              
+  if profesores.list && profesores.list.length > 0
+    div.modal.fade#modalConfirmDelete(tabindex="-1")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h4.modal-title Eliminar Profesor
+          div.modal-body
+            form(method="POST")
+              input(type="hidden" value="" name="profesorId")
+              div.form-group
+                label.control-label ¿Estas seguro que deseas eliminar el juego?
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-default Cancelar
+                button(type="submit" formaction=profesores.routes.del).btn.btn-danger Eliminar

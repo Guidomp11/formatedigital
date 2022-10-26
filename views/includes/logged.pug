@@ -1,0 +1,11 @@
+if profileMenu
+  li.dropdown
+    a.dropdown-toggle(data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false")
+      if userPicture
+        img.img-circle.profile-img-nav(src=userPicture alt=text('profile'))
+      | !{username} #[span.caret]
+    ul.dropdown-menu
+      each key in profileMenu
+        li #[a(href=key.link)= key.option]
+      li(role="separator").divider
+      li #[a(href="/logout")=text('exit')]

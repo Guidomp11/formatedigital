@@ -1,0 +1,9 @@
+div.navbar.navbar-inverse.navbar-static-top
+  button(type="button" data-toggle="offcanvas" data-recalc="false" data-target=".navmenu" data-canvas="body").navbar-toggle.navbar-btn
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  if auth
+    div.container
+      ul.nav.navbar-nav.navbar-right
+        include /includes/logged

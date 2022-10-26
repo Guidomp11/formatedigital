@@ -1,0 +1,141 @@
+//- Crea un modal dinamico usado en la seccion de administrador para colegio
+mixin ModalAdminAddListWithCheckbox(modalId, list, th1, th2, td1,td2 ,checkboxClass, confirmId, td1sub)
+  div.modal.fade(tabindex="-1" id=modalId)
+    div.modal-dialog.modal-lg(role="dialog")
+      div.modal-content
+        div.modal-header
+          button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+          h4.modal-title Seleccione los elementos para agregar
+        div.modal-body
+          div.panel-body
+            if list
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th= th1
+                      if th2 != null
+                        th= th2
+                      th(data-toggle="tooltip" data-placement="left" title="Cargar") Seleccione
+                  tbody
+                    each dato, index in list
+                      tr
+                        td= index
+                        if dato[td1] && dato[td1][td1sub]
+                          td= dato[td1][td1sub]
+                        else
+                          td= dato[td1]
+                        if th2 != null
+                          td= dato[td2]
+                        td #[input(type="checkbox" value=dato.id class=checkboxClass)]
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-warning Cancelar
+                button.btn.btn-success(type="submit" id=confirmId) Cargar
+            else
+              div.alert.alert-warning No hay datos.
+              
+mixin ModalAdminAddListWithCheckboxComplex(modalId, list, th1, td1, td1Sub, th2, td2, td2Sub, checkboxClass, confirmId)   
+  div.modal.fade(tabindex="-1" id=modalId)
+    div.modal-dialog.modal-lg(role="dialog")
+      div.modal-content
+        div.modal-header
+          button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+          h4.modal-title Seleccione los elementos para agregar
+        div.modal-body
+          div.panel-body
+            if list
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th= th1
+                      th= th2
+                      th(data-toggle="tooltip" data-placement="left" title="Cargar") Seleccione
+                  tbody
+                    each dato, index in list
+                      tr
+                        td= index
+                        if dato[td1] && dato[td1][td1Sub]
+                          td= dato[td1][td1Sub]
+                        else
+                          td ---
+                        if dato[td2] && dato[td2][td2Sub]
+                          td= dato[td2][td2Sub]
+                        else
+                          td ---
+                        td #[input(type="checkbox" value=dato.id class=checkboxClass)]
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-warning Cancelar
+                button.btn.btn-success(type="submit" id=confirmId) Cargar
+            else
+              div.alert.alert-warning No hay datos.
+
+//- Crea un modal dinamico usado en la seccion de administrador para profesores
+mixin ModalAdminAddListWithRadio(modalId, list, th1, td1,radioClass, confirmId, td1sub)
+  div.modal.fade(tabindex="-1" id=modalId)
+    div.modal-dialog.modal-lg(role="dialog")
+      div.modal-content
+        div.modal-header
+          button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+          h4.modal-title Seleccione los elementos para agregar
+        div.modal-body
+          div.panel-body
+            if list
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th= th1
+                      th(data-toggle="tooltip" data-placement="left" title="Cargar") Seleccione
+                  tbody
+                    each dato, index in list
+                      tr
+                        td= index
+                        td= dato[td1]
+                        td #[input(type="radio" value=dato.id class=radioClass name="modalRadioOptions")]
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-warning Cancelar
+                button.btn.btn-success(type="submit" id=confirmId) Cargar
+            else
+              div.alert.alert-warning No hay datos.
+
+//- Crea un modal dinamico usado en la seccion de administrador para profesores con profunidad de elementos
+mixin ModalAdminAddListWithRadioComplex(modalId, list, th1, td1, td1Sub, th2, td2, td2Sub, radioClass, confirmId)
+  div.modal.fade(tabindex="-1" id=modalId)
+    div.modal-dialog.modal-lg(role="dialog")
+      div.modal-content
+        div.modal-header
+          button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+          h4.modal-title Seleccione los elementos para agregar
+        div.modal-body
+          div.panel-body
+            if list
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th= th1
+                      th= th2
+                      th(data-toggle="tooltip" data-placement="left" title="Cargar") Seleccione
+                  tbody
+                    each dato, index in list
+                      tr
+                        td= index
+                        if dato[td1] && dato[td1][td1Sub]
+                          td= dato[td1][td1Sub]
+                        else
+                          td ---
+                        if dato[td2] && dato[td2][td2Sub]
+                          td= dato[td2][td2Sub]
+                        else
+                          td ---
+                        td #[input(type="radio" value=dato.id class=radioClass name="modalRadioOptions")]
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-warning Cancelar
+                button.btn.btn-success(type="submit" id=confirmId) Cargar
+            else
+              div.alert.alert-warning No hay datos.

@@ -1,0 +1,10 @@
+extends ../includes/layout
+block navigation
+  -var selected = 'About';
+  include ../includes/navigation
+block content
+  div.container-fluid
+    div.row
+      div.col-md-12.text-center(style="background-color:red")
+        h2 !{title}
+        p About the Platform?

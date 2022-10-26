@@ -1,0 +1,23 @@
+extends /includes/layout
+block navigation
+  include /includes/navigation
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title=text('teacher')
+      div.row.dashboard.text-center
+        include /flash
+        div.col-md-6
+          div.card
+            div.card-title #[span.glyphicon.glyphicon-stats]
+              p=text('statistics')
+            div.card-body
+              a(href=profesor.routes.college role="button").btn.btn-success=text('colleges')
+              =" "
+              a(href=profesor.routes.alumns role="button").btn.btn-info=text('alumns')
+        div.col-md-6
+          div.card
+            div.card-title #[span.fa.fa-gamepad]
+              p=text('games')
+            div.card-body
+              a(href=profesor.routes.games role="button").btn.btn-primary=text('show')

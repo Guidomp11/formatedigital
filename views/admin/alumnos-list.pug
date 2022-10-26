@@ -1,0 +1,73 @@
+extends /includes/layout
+block styles  
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Alumnos
+      div.row.dashboard
+        include /flash
+        div.panel.panel-info
+          div.panel-heading
+            div.panel-title.text-right
+              a(href=alumnos.routes.add title="Nuevo alumno").btn.btn-default
+                span.glyphicon.glyphicon-plus(aria-hidden="true")
+          div.panel-body
+            if alumnos.list && alumnos.list.length > 0
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th Usuario
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+                  tbody
+                    each alumno, index in alumnos.list
+                      tr(class=(alumno.active ? "success" : "danger"))
+                        td= index
+                        td= alumno.usuario
+                        td= alumno.active ? "Si" : "No"
+                        td
+                          form(method="POST")
+                            div.btn-group(role="group")
+                              input(type="hidden" value=alumno.id name="alumnoId")
+                              input(type="hidden" value=alumno.active ? "true" : "false" name="alumnoActive")
+                              a(title="Modificar alumno" href=alumnos.routes.root + alumno.id + alumnos.routes.mod).btn.btn-warning
+                                span.glyphicon.glyphicon-edit(aria-hidden="true")
+                              a(title="Informacion del alumno" href=alumnos.routes.root + alumno.id).btn.btn-success
+                                span.glyphicon.glyphicon-info-sign(aria-hidden="true")
+                              button(type="button" title="Eliminar alumno" data-toggle="modal" data-target="#modalConfirmDelete" data-id=alumno.id).btn.btn-danger
+                                span.glyphicon.glyphicon-remove(aria-hidden="true")
+                              button(type="submit" title="Bloquear alumno" formaction=alumnos.routes.block).btn.btn-info
+                                span.glyphicon.glyphicon-ban-circle(aria-hidden="true")
+                  tfoot
+                    tr
+                      th Indice
+                      th Usuario
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+            else
+              div.text-center No se encontraron datos
+              
+  if alumnos.list && alumnos.list.length > 0
+    div.modal.fade#modalConfirmDelete(tabindex="-1")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h4.modal-title Eliminar alumno
+          div.modal-body
+            form(method="POST")
+              input(type="hidden" value="" name="alumnoId")
+              div.form-group
+                label.control-label ¿Estas seguro que deseas eliminar al alumno?
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-default Cancelar
+                button(type="submit" formaction=alumnos.routes.del).btn.btn-danger Eliminar

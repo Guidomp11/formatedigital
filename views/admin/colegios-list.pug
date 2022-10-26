@@ -1,0 +1,74 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles  
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Colegios
+      div.row.dashboard
+        include /flash
+        div.panel.panel-info
+          div.panel-heading
+            div.panel-title.text-right
+              a(href=colegios.routes.add title="Nuevo Colegio").btn.btn-default
+                span.glyphicon.glyphicon-plus(aria-hidden="true")
+          div.panel-body
+            if colegios.list && colegios.list.length > 0
+              div.table-responsive
+                table.table.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Indice
+                      th Nombre
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+                  tbody
+                    each colegio, index in colegios.list
+                      tr(class=(colegio.active ? "success" : "danger"))
+                        td= index
+                        td= colegio.nombre
+                        td= colegio.active ? "Si" : "No"
+                        td
+                          form(method="POST")
+                            div.btn-group(role="group")
+                              input(type="hidden" value=colegio.id name="colegioId")
+                              input(type="hidden" value=colegio.active ? "true" : "false" name="colegioActive")
+                              a(title="Modificar Colegio" href=colegios.routes.root + colegio.id + colegios.routes.mod).btn.btn-warning
+                                span.glyphicon.glyphicon-edit(aria-hidden="true")
+                              a(title="Informacion del Colegio" href=colegios.routes.root + colegio.id).btn.btn-success
+                                span.glyphicon.glyphicon-info-sign(aria-hidden="true")
+                              button(type="button" title="Eliminar Colegio" data-toggle="modal" data-target="#modalConfirmDelete" data-id=colegio.id).btn.btn-danger
+                                span.glyphicon.glyphicon-remove(aria-hidden="true")
+                              button(type="submit" title="Bloquear Colegio" formaction=colegios.routes.block).btn.btn-info
+                                span.glyphicon.glyphicon-ban-circle(aria-hidden="true")
+                  tfoot
+                    tr
+                      th Indice
+                      th Nombre
+                      th Activo
+                      th(data-toggle="tooltip" data-placement="left" title="Modificar/Eliminar") Acciones
+            else
+              div.text-center No se encontraron datos
+              
+  if colegios.list && colegios.list.length > 0
+    div.modal.fade#modalConfirmDelete(tabindex="-1")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h4.modal-title Eliminar Colegio
+          div.modal-body
+            form(method="POST")
+              input(type="hidden" value="" name="colegioId")
+              div.form-group
+                label.control-label ¿Estas seguro que deseas eliminar el juego?
+              div.modal-footer
+                button(type="button" data-dismiss="modal").btn.btn-default Cancelar
+                button(type="submit" formaction=colegios.routes.del).btn.btn-danger Eliminar

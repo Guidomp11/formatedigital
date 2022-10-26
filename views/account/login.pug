@@ -1,0 +1,19 @@
+extends /includes/layout
+block navigation
+  include /includes/navigation
+block content
+  div.container-background
+    div.container.full
+      div.row
+        div.col-md-8.text-center.middle
+          form.account-form.login-box(action="/login" method="post")
+            div.panel-heading
+              h3.panel-title=text('login') + ' ' + text('a') + ' ' + title
+            div.panel-body !{form}
+              button.btn.btn-lg.btn-success.btn-block(type="submit")=text('login')
+              //-div.form-group
+              //-| #[a(href="forgot") Olvide mi contraseña]
+              //-p
+              //-| #[a(href="register") Registrate]
+            if error_message
+              include /flash

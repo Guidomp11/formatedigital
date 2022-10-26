@@ -1,0 +1,26 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles
+  include styles
+  link(rel='stylesheet', href='/bootstrap-tagsinput/dist/bootstrap-tagsinput.css')
+block scripts
+  include scripts
+  script(src='/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js')
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+        | #{juego.title}
+      div.row.dashboard
+        include /flash
+        form.form-horizontal.dropzone(method="POST" action=juego.routes.mod autocomplete="nope")
+          if juego.formEdit
+            | !{juego.formEdit}
+            div.pull-right
+              a(href=juego.routes.root).btn.btn-warning Cancelar
+              button.btn.btn-success(type="submit") Actualizar
+          else
+            div.alert.alert-danger No se pudo cargar el formulario.

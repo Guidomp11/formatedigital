@@ -1,0 +1,16 @@
+if error_message && error_message.length > 0
+  div.alert.alert-danger.text-center
+    for error in error_message
+      p= error.msg
+
+if info_message && info_message.length > 0
+  div.alert.alert-info.alert-dismissible(role="alert")
+    button(type="button" data-dismiss="alert" aria-label="Close").close #[span(aria-hidden="true") &times;]
+    for info in info_message
+      p= info.msg
+      
+if warning_mesage && warning_mesage.length > 0
+  div.alert.alert-warning.alert-dismissible(role="alert")
+    button(type="button" data-dismiss="alert" aria-label="Close").close #[span(aria-hidden="true") &times;]
+    for warning in warning_mesage
+      p= warning.msg

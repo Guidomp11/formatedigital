@@ -1,0 +1,135 @@
+extends /includes/layout
+block styles
+  link(rel='stylesheet', href='/jasny-bootstrap/dist/css/jasny-bootstrap.min.css')
+  link(rel='stylesheet', href='/Croppie/croppie.css')
+  link(rel='stylesheet', href='/bootstrap-datepicker-vitalets/css/datepicker.css')
+block scripts
+  script(src='/jasny-bootstrap/dist/js/jasny-bootstrap.min.js')
+  script(src='/Croppie/croppie.min.js')
+  script(src='/bootstrap-datepicker-vitalets/js/bootstrap-datepicker.js')
+  script(src='/js/functions.js')
+  script.
+    $(document).ready(function(){
+      /*General*/
+      $("#fileUpload").on('change.bs.fileinput',function(e){
+          e.stopPropagation();
+          PictureEditor(".fileinput-preview > img", "profesorPictureResult");
+      });
+      
+      /*Datepicker*/
+      var date_options = {
+        format: "dd-mm-yyyy",
+        autoclose: true,
+        todayBtn: true,
+      };
+      $(".form_datetime").datepicker(date_options);
+    });
+block navigation
+  include /includes/navigation
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title=profesor.dato.usuario
+      div.row.dashboard
+        include /flash
+        ul.nav.nav-pills.nav-justified
+          li.active #[a(data-toggle="pill" href="#general")=text('general')]
+          li #[a(data-toggle="pill" href="#contact")=text('contact')]
+      
+        div.tab-content.dashboard
+          div.tab-pane.fade.in.active#general
+            form(method="POST" action=profesor.routes.general autocomplete="nope")
+              div.container-fluid
+                div.col-xs-3.col-sm-3.col-md-3#fileUpload
+                  .fileinput.fileinput-new(data-provides='fileinput')
+                    .fileinput-new.thumbnail(style='width: 150px; height: 150px;')
+                      img(src=profesor.dato.profile_picture, alt=text('profile'))
+                    .fileinput-preview.fileinput-exists.thumbnail(style='max-width: 150px; max-height: 150px;')
+                    div.text-center
+                      span.btn.btn-default.btn-file
+                        span.fileinput-new=text('select')
+                        span.fileinput-exists=text('change')
+                        input(type='file')
+                      a.btn.btn-default.fileinput-exists(href='#', data-dismiss='fileinput')=text('remove')
+                  input(type="hidden" name="profesorPictureResult")
+
+                div.col-md-9
+                  div.form-group
+                    label.control-label(for='profesorUser')=text('user')
+                    input#profesorUser.form-control.input-md(name='profesorUser', placeholder='Usuario', type='text', value=profesor.dato.usuario readonly)
+                  div.form-group
+                    label.control-label(for='profesorColegio')=text('colleges')
+                    div.input-group.has-success
+                      span.input-group-addon#profesorColegio #[span.fa.fa-university(aria-hidden="true")]
+                      div#colegioSelection
+                        input(type="text" aria-describedby="profesorColegio" disabled value=profesor.colegios).form-control
+                  div.form-group  
+                    label.control-label(for='profesorGrado')=text('grades')
+                    div.input-group.has-success
+                      if profesor.grados && profesor.grados.length > 0
+                        div.list-group-horizontal
+                          each grado in profesor.grados
+                            li.list-group-item(data-style="button")=grado.division
+                      else
+                        div.text-center
+                          p.text-danger=text('no_grades')
+              div.clearfix
+              hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")  
+              div.text-center
+                a.btn.btn-warning(href=profesor.routes.root role="button")=text('back')
+                button.btn.btn-success(type="submit")=text('update')
+            
+          div.tab-pane.fade#contact
+            div.container-fluid
+              div.row
+                form(method="POST" action=profesor.routes.contact autocomplete="nope")
+                  div#contact-container
+                    div.contact
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoNombre')=text('name')
+                          input#profesorContactoNombre.form-control(name='profesorContactoNombre', placeholder=text('name'), type='text' value=profesor.contact.nombre)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoApellido')=text('surname')
+                          input#profesorContactoApellido.form-control(name='profesorContactoApellido', placeholder=text('surname'), type='text' value=profesor.contact.apellido)
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoEmail')=text('email')
+                          input#profesorContactoEmail.form-control(name='profesorContactoEmail', placeholder=text('email'), type='email' value=profesor.contact.email)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoBirth')=text('birth')
+                          input#profesorContactoBirth.form-control.form_datetime(name='profesorContactoBirth', placeholder=text('birth'), type='text' value=profesor.contact.birth)
+                            
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoTelefono')=text('telephone')
+                          input#profesorContactoTelefono.form-control(name='profesorContactoTelefono', type='tel' value=profesor.contact.phone.p_number)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='profesorContactoFax')=text('fax')
+                          input#profesorContactoFax.form-control(name='profesorContactoFax', type='tel' value=profesor.contact.phone.f_number)
+                      div.clearfix
+                      div.col-md-12.text-center
+                        h3 Social
+                        div.form-group
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-facebook]
+                              input#profesorContactoSocialFb.form-control(name='profesorContactoSocialFb', placeholder='Facebook', type='text' value=profesor.contact.social.facebook)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-twitter]
+                              input#profesorContactoSocialTw.form-control(name='profesorContactoSocialTw', placeholder='Twitter', type='text' value=profesor.contact.social.twitter)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-skype]
+                              input#profesorContactoSocialSk.form-control(name='profesorContactoSocialSk', placeholder='Skype', type='text' value=profesor.contact.social.skype)
+                      div.clearfix
+                      hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")
+                      div.text-center
+                        a.btn.btn-warning(href=profesor.routes.root role="button")=text('back')
+                        button.btn.btn-success(type="submit")=text('update')

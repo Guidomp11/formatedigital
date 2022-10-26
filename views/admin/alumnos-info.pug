@@ -1,0 +1,95 @@
+extends /includes/layout
+include /mixins/modal
+block styles
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title= alumno.dato.usuario
+      div.row.dashboard
+        include /flash
+        ul.nav.nav-pills.nav-justified
+          li.active #[a(data-toggle="pill" href="#general") General]
+          li #[a(data-toggle="pill" href="#contact") Contacto]
+          
+        form(method="POST")
+          div.tab-content.dashboard
+            div.tab-pane.fade.in.active#general
+              div.container-fluid
+                div.col-xs-3.col-sm-3.col-md-3#fileUpload
+                  .fileinput.fileinput-new(data-provides='fileinput')
+                    .fileinput-new.thumbnail(style='width: 150px; height: 150px;')
+                      img(src=alumno.dato.profile_picture, alt='Profile picture')
+
+                div.col-md-9
+                  div.form-group
+                    label.control-label(for='alumnoUser') Usuario
+                    input#alumnoUser.form-control.input-md(name='alumnoUser', placeholder='Usuario', required='', type='text', disabled value=alumno.dato.usuario readonly)
+                  div.form-group
+                    label.control-label(for='alumnoColegio') Colegio
+                    div.input-group.has-success
+                      span.input-group-addon#alumnoColegio #[span.fa.fa-university(aria-hidden="true")]
+                      div#colegioSelection
+                        input#alumnoColegio-input(type="text" placeholder="Seleccione un colegio" required='' aria-describedby="alumnoColegio" disabled value= alumno.colegio ? alumno.colegio.name : "").form-control
+                  div.form-group  
+                    label.control-label(for='alumnoGrado') Grado
+                    div.input-group.has-success
+                      span.input-group-addon#alumnoGrado #[span.fa.fa-university(aria-hidden="true")]
+                      div#gradoSelection
+                        input#alumnoGrado-input(type="text" placeholder="Seleccione un colegio" required='' aria-describedby="alumnoGrado" disabled value= alumno.colegio ? alumno.grado.division : "").form-control
+            
+            div.tab-pane.fade#contact
+              div.container-fluid
+                div.row
+                  div#contact-container
+                    div.contact
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoNombre') Nombre
+                          input#alumnoContactoNombre.form-control(name='alumnoContactoNombre', placeholder='Nombre', type='text' disabled value=alumno.contact.nombre)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoApellido') Apellido
+                          input#alumnoContactoApellido.form-control(name='alumnoContactoApellido', placeholder='Apellido', type='text' disabled value=alumno.contact.apellido)
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoEmail') Email
+                          input#alumnoContactoEmail.form-control(name='alumnoContactoEmail', placeholder='Email', type='email' disabled value=alumno.contact.email)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoBirth') Cumpleaños
+                          input#alumnoContactoBirth.form-control.form_datetime(name='alumnoContactoBirth', placeholder='Cumpleaños', type='text' disabled value=alumno.contact.birth)
+                            
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoTelefono') Telefono
+                          input#alumnoContactoTelefono.form-control(name='alumnoContactoTelefono', type='tel' disabled value=alumno.contact.phone.p_number)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoFax') Fax
+                          input#alumnoContactoFax.form-control(name='alumnoContactoFax', type='tel' disabled value=alumno.contact.phone.f_number)
+                      div.clearfix
+                      div.col-md-12.text-center
+                        h3 Social
+                        div.form-group
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-facebook]
+                              input#alumnoContactoSocialFb.form-control(name='alumnoContactoSocialFb', placeholder='Facebook', type='text' disabled value=alumno.contact.social.facebook)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-twitter]
+                              input#alumnoContactoSocialTw.form-control(name='alumnoContactoSocialTw', placeholder='Twitter', type='text' disabled value=alumno.contact.social.twitter)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-skype]
+                              input#alumnoContactoSocialSk.form-control(name='alumnoContactoSocialSk', placeholder='Skype', type='text' disabled value=alumno.contact.social.skype)
+                      div.clearfix
+                      hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")

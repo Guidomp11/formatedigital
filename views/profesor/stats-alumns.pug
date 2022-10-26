@@ -1,0 +1,120 @@
+extends /includes/layout
+block scripts
+  script(src='/datatables.net/js/jquery.dataTables.min.js')
+  script(src='/datatables.net-bs/js/dataTables.bootstrap.min.js')
+  script(src='/js/functions.js')
+  script.
+    $(function() {
+      DataTableProcess('.table-results');
+      
+      $(".table-results").on('click', function(){
+        $("table > tbody > tr").on('click', function(){
+          var alumnData = $(this).children('td.alumn-data');
+          var aGames = alumnData.children('input');
+          var aName = alumnData.find('.alumn-name').text();
+          var gl = $("#games-list");
+          
+          gl.data('alumn-games', aGames);
+          gl.data('alumn-name', aName);
+          gl.modal('show');
+        });
+      });
+      
+      /* Row click */
+      $("table > tbody > tr").on('click', function(){
+        var alumnData = $(this).children('td.alumn-data');
+        var aGames = alumnData.children('input');
+        var aName = alumnData.find('.alumn-name').text();
+        var gl = $("#games-list");
+        
+        gl.data('alumn-games', aGames);
+        gl.data('alumn-name', aName);
+        gl.modal('show');
+      });
+      
+      /* Modal data */
+      $("#games-list").on('show.bs.modal', function (event) {
+        var modal = $(this);
+        var dataGames = $(this).data('alumn-games');
+        var dataName = $(this).data('alumn-name');
+        var listGames = $("#alumn-games");
+        var statsLink = $("#alum-stats");
+        var alumnoId = "";
+        listGames.empty();
+        
+        modal.find("#alumn-name").text(dataName);
+        dataGames.each(function(ix, d) {
+          var dJson = JSON.parse(d.value);
+          alumnoId = dJson.alumnoId;
+          listGames.append($('<option>',{
+            value: dJson.gameId,
+            text: dJson.gameTitle
+          }));
+        });
+        
+        statsLink.on('click', function(e){
+          statsLink.attr('href',window.location + "/" + listGames.val() + "/" + alumnoId); /*Stats del alumno*/
+        });
+      });
+    });
+block styles
+  link(rel='stylesheet', href='/datatables.net-bs/css/dataTables.bootstrap.min.css')
+  link(rel='stylesheet', href='/bootstrap-formhelpers/dist/css/bootstrap-formhelpers.min.css')
+block navigation
+  include /includes/navigation
+block content
+  div.container
+    div.row.dashboard-title=text('statistics')
+    div.row.dashboard
+      include /flash
+      div.panel.panel-info
+        div.panel-heading
+          div Estadisticas por alumnos
+        div.panel-body
+          if profesor && profesor.alumnos && profesor.alumnos.length > 0
+            div.table-responsive
+              table.table.table-striped.table-bordered.table-hover.text-center(data-page-length="25").table-results
+                thead
+                  tr
+                    th Indice
+                    th Colegio
+                    th Grado
+                    th Alumno
+                tbody
+                  each alumno, index in profesor.alumnos
+                    tr
+                      td= index
+                      td= alumno.colegio_nombre
+                      td= alumno.division
+                      td.alumn-data
+                        div.alumn-name= alumno.nombrecompleto
+                        if alumno.games && alumno.games.length > 0
+                          each game, index in alumno.games
+                            - var data = {gameTitle: game.datos.title, gameId: game.datos.id, alumnoId: alumno.id};
+                            input(type="hidden" value=data name="alumnoGame"+index)
+                tfoot
+                  tr
+                    th Indice
+                    th Colegio
+                    th Grado
+                    th Alumno
+          else
+            div.text-center No se encontraron datos
+          
+  if profesor && profesor.alumnos
+    div#games-list.modal.fade(tabindex="-1" role="dialog")
+      div.modal-dialog(role="dialog")
+        div.modal-content
+          div.modal-header
+            button(type="button" data-dismiss="modal" aria-label="Close").close #[span(aria-hidden="true") &times;]
+            h3#alumn-name
+          div.modal-body
+            div.container-fluid
+              div.form-group
+                div.text-center Juegos del alumno
+              div.row
+                select.form-control#alumn-games
+          div.modal-footer
+            div.text-center
+              a#alum-stats(rol="button").btn.btn-success Ver Estadisticas
+            

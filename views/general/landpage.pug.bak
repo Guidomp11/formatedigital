@@ -1,0 +1,166 @@
+extends ../includes/layout
+block navigation  
+  include ../includes/navigation
+block scripts
+  script.
+    $(document).ready(function(){
+      $("#slideshow > div:gt(0)").hide();
+      setInterval(function() { 
+        $('#slideshow > div:first')
+          .fadeOut(1000)
+          .next()
+          .fadeIn(1000)
+          .end()
+          .appendTo('#slideshow');
+      },  3000);
+    });
+block content
+  div.container-background
+    div.container
+      include /flash
+      div.row
+        div.row
+          div.col-md-12
+            div.content-img-portada
+        div.content-introduccion
+          div.row
+            div.col-md-6
+              div.content-description-title
+                h1 Videojuegos Educativos
+              div.content-description
+                |Muchas veces la voluntad de incorporar la cultura digital a las prácticas del aula queda atrapada en el intento de traducir a la pantalla lo que ya hacíamos con el lápiz y el papel. 
+                br
+                br
+                |Nosotros estamos comprometidos con la búsqueda permanente de escenarios didácticos que favorezcan a los alumnos en el desarrollo de su actividad intelectual.
+                br
+                br
+                |Nuestra propuesta es brindar un conjunto de videojuegos educativos. De esta manera logramos generar situaciones didácticas que preserven nuestra concepción de enseñanza de la matemática estructurada sobre la base de resolución de problemas, y al mismo tiempo permitan aprovechar los recursos digitales.
+            div.col-md-6
+              img(src="/img/introduccion.png").img-responsive
+        div.content
+          div.row
+            div.content-img-separator
+        
+        div.content
+          div.row.content-introduccion.content-info
+            div.content-about.content-text
+              div.col-md-6
+                p
+                  | Imaginar, pensar, resolver, discutir, intercambiar, colaborar,
+                  | analizar, estudiar.
+                  | Estos son los ingredientes fundamentales que a nuestro entender
+                  | organizan la clase de matemática.
+              div.col-md-6
+                | A ese paisaje queremos aportar a través de la producción de
+                | situaciones didácticas que se beneficien de los recursos que aporta
+                | el formato digital.
+                br
+              div.col-md-12
+                p Proponemos video juegos para la clase de matemática ¿Qué hay detrás?
+                p Un video juego es una secuencia didáctica en la que el trabajo de chicos y docente se va entramando hasta que finalmente afloran relaciones nodales relativas a un concepto matemático.
+                p La podemos pensar como un pequeño viaje hacia la producción de ideas.
+              div.col-md-6
+                p ¿Cómo es ese viaje? Frente a la pantalla, los chicos enfrentan un problema, arriesgan una respuesta que, obviamente, se basa en alguna idea que pensaron.
+                p Aciertan o no. Hay una segunda pantalla en la que palabras, números y gráficos se combinan para expresar algo de lo que estuvo en juego.
+                p Vuelven a jugar, o no. Eso se establece en la clase. Las decisiones que los alumnos van tomando en esta primera etapa quedan registradas en las computadoras.
+                p Serán para los debates que proponga la (el) maestra(o).
+                p Llega un momento donde hay que recoger los frutos del trabajo.
+                p Ya no se juega, se piensa lo jugado. La/el docente analiza con los niños los números que estuvieron en danza, los coordina con los resultados obtenidos, propone relaciones, considera su alcance, extrae conclusiones.
+                p Conclusiones que van más allá de este contexto particular y que irán a dialogar con otras tantas ideas que forman parte de la historia matemática de la clase. Jugar y pensar entre todos lo jugado: esos son los pilares en los que se apoya la construcción que proponemos.
+              div.content-games.col-md-6.text-center
+                div#slideshow
+                  if webpage.games && webpage.games.length > 0
+                    each game in webpage.games
+                      div
+                        img(src=game)
+              
+            //-div.content-about.content-text
+              div.col-md-12
+                p Nuestra Propuesta:
+                p • Tiene distintos niveles dentro de cada juego, donde aumenta la dificultad nivel a nivel.
+                p • Se puede jugar varias veces en un mismo nivel. En ese caso cambian los números pero se conservan las relaciones.
+                p • Al pasar de nivel se modifican las relaciones en juego.
+                p • Cada juego, a su vez, puede tener distintos niveles de dificultad, para ajustarlo a las distintas edades.
+                p • Brindan ayuda a través de calculadora, explicaciones por nivel, gráficos, y modos de exploración.
+                p • Almacena toda la información de cada partida de juego, para luego brindársela al profesor.
+              div
+                div.col-md-6
+                  br
+                  br
+                  p El Alumno:
+                  p • Movilizan relaciones matemáticas para tomar decisiones.
+                  p • Acceden a través de los resultados del juego a la validación de su propio trabajo.
+                  p • Toman contacto con las ideas matemáticas a las que se apunta en cada situación.
+                  p • Interactúan simultáneamente con diferentes formas de representación.
+                  p • Tienen la oportunidad de reutilizar las propiedades que se identificaron.
+                  p • Cambian los valores de las variables y analizan los efectos que se producen.
+                div.col-md-6
+                  br
+                  br
+                  p El Profesor:
+                  p • Tiene registro del historial de los movimientos de cada alumno.
+                  p • Se le brinda esa información para saber con anticipación qué alumnos necesitan mayor o menor apoyo.
+                  p • Puede capturar las pantallas que seleccione para utilizarlas en distintos momentos fuera de la situación de juego.
+                  p • Usa esas pantallas en particular para reflexionar sobre las decisiones de los chicos.
+                  p • Utiliza las mismas para discutir con todo el grupo clase.
+      div.content
+        div.row
+          //-div.content-games.col-md-6.text-center
+            div#slideshow
+              if webpage.games && webpage.games.length > 0
+                each game in webpage.games
+                  div
+                    img(src=game)
+          div.col-md-offset-4
+            div.content-contact.col-md-5
+              h3 Contactenos
+              form(method="POST")
+                div.form-group
+                  label(for="contactName") Nombre
+                  input(type="text" placeholder="Nombre" name='contactName').form-control
+                div.form-group
+                  label(for="contactEmail") Email
+                  input(type="email" placeholder="Email" name='contactEmail').form-control
+                button(type="submit").btn.btn-success Enviar
+              
+      //-div.content
+        div.row
+          div.content-premios.content-text.col-md-6
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          div.content-fundadores.content-text.col-md-6
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        
+              
+  //-div.container-fluid
+    div.row
+      div.col-md-12.text-center(style="background-color:red")
+        h2 !{title}
+        p Poner unas imagenes, coloridas y divertidas full width
+    div.row
+      div.container.text-center(style="background-color:green")
+        div.col-md-12
+          h2 Explicacion de la plataforma
+          p Poner algunos detalles, algunas columnas con estadisticas (Skills, alumnos, progresos, etc)
+    div.row
+      div.container.text-center(style="background-color:yellow")
+        div.col-md-12
+          h2 Ofrecer un campo de suscripcion o contacto directo
+    div.row
+      div.container.text-center(style="background-color:#18fa20")
+        div.col-md-12
+          h2 Features
+          p Dar a conocer los features (control de usuarios, panel de administracion de alumnos)
+    div.row
+      div.container.text-center(style="background-color:grey")
+        div.col-md-12
+          h2 Partners / Premios
+          p Columnas con los partners o premios (futuro)
+    div.row
+      div.container.text-center(style="background-color:orange")
+        div.col-md-12
+          h2 Equipo
+          p Datos del equipo de Formate Digital
+    div.row
+      div.container.text-center(style="background-color:yellow")
+        div.col-md-12
+          h2 Ofrecer un campo de suscripcion o contacto directo (Nuevamente)

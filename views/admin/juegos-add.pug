@@ -1,0 +1,44 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles
+  include styles
+  link(rel='stylesheet', href='/bootstrap-tagsinput/dist/bootstrap-tagsinput.css')
+  //link(rel='stylesheet', href='/dropzone/dist/min/dropzone.min.css')
+block scripts
+  include scripts
+  script(src='/dropzone/dist/min/dropzone.min.js')
+  script(src='/js/dropzone.js')
+  script(src='/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js')
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Juegos
+      div.row.dashboard
+        include /flash
+        if juego.formNew
+          form.form-horizontal.dropzone(method="POST" action=juego.routes.add autocomplete="nope")#my-awesome-dropzone
+            div.dz-message
+            | !{juego.formNew}
+            div(role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0").progress.progress-striped.active#total-progress
+              div(style="width:0%;" data-dz-uploadprogress="").progress-bar.progress-bar-success
+            div.form-group.text-center
+              span.btn.btn-success.fileinput-button #[i.glyphicon.glyphicon-plus] Agregar Juego
+              div.dz-error-message
+                div.alert.alert-dismissible.hidden(role="alert")
+                  p.message
+            div.table.table-striped.files.text-center#previews
+              div.file-row#template
+                div Archivo: #[span(data-dz-name).name]
+                div Size: #[span(data-dz-size).size]
+                  div(role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0").progress.progress-striped.active
+                    div(style="width:0%;" data-dz-uploadprogress).progress-bar.progress-bar-success
+                div
+                  button(type="button").btn.btn-primary.start #[i.glyphicon.glyphicon-upload] Cargar!
+                  button.btn.btn-danger.cancel #[i.glyphicon.glyphicon-trash] Remover!
+          a(href=juego.routes.root role="button").btn.btn-warning.start #[i.glyphicon.glyphicon-upload] Volver
+        else
+          div.alert.alert-danger No se pudo cargar el formulario.

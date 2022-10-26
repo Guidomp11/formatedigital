@@ -1,0 +1,152 @@
+extends /includes/layout
+include /mixins/modal
+block styles
+  include styles
+  link(rel='stylesheet', href='/Croppie/croppie.css')
+  link(rel='stylesheet', href='/bootstrap-datepicker-vitalets/css/datepicker.css')
+block scripts
+  include scripts
+  script(src='/Croppie/croppie.min.js')
+  script(src='/bootstrap-datepicker-vitalets/js/bootstrap-datepicker.js')
+  script.
+    $(document).ready(function(){
+      
+      /*General*/
+      $("#fileUpload").on('change.bs.fileinput',function(e){
+          e.stopPropagation();
+          PictureEditor(".fileinput-preview > img", "alumnoPictureResult");
+      });
+            
+      /*Colegio*/
+      $("#addColegio").on('click',function(){
+        LoadOptionInElement($("#colegioSelection"), '.checkColegioToAdd', 'colegioId', 2, $("#alumnoColegio-input"));
+        $("#modalAddColegio").modal('hide');
+      });
+      
+      /*Grados*/
+      $("#addGrado").on('click',function(){
+        LoadOptionInElement($("#gradoSelection"), '.checkalumnoToAdd', 'gradoId', 2, $("#alumnoGrado-input"));
+        $("#modalAddGrado").modal('hide');
+      });
+      
+      /*Datepicker*/
+      var date_options = {
+        format: "dd-mm-yyyy",
+        autoclose: true,
+        todayBtn: true,
+      };
+      $(".form_datetime").datepicker(date_options);
+    });
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Alumno
+      div.row.dashboard
+        include /flash
+        ul.nav.nav-pills.nav-justified
+          li.active #[a(data-toggle="pill" href="#general") General]
+          li #[a(data-toggle="pill" href="#contact") Contacto]
+          
+        form(method="POST" action=alumno.routes.mod autocomplete="nope")
+          div.tab-content.dashboard
+            div.tab-pane.fade.in.active#general
+              div.container-fluid
+                div.col-xs-3.col-sm-3.col-md-3#fileUpload
+                  .fileinput.fileinput-new(data-provides='fileinput')
+                    .fileinput-new.thumbnail(style='width: 150px; height: 150px;')
+                      img(src=alumno.dato.profile_picture, alt='Profile picture')
+                    .fileinput-preview.fileinput-exists.thumbnail(style='max-width: 150px; max-height: 150px;')
+                    div.text-center
+                      span.btn.btn-default.btn-file
+                        span.fileinput-new Select image
+                        span.fileinput-exists Change
+                        input(type='file')
+                      a.btn.btn-default.fileinput-exists(href='#', data-dismiss='fileinput') Remove
+                  input(type="hidden" name="alumnoPictureResult")
+
+                div.col-md-9
+                  div.form-group
+                    label.control-label(for='alumnoUser') Usuario
+                    input#alumnoUser.form-control.input-md(name='alumnoUser', placeholder='Usuario', required='', type='text', value=alumno.dato.usuario readonly)
+                  div.form-group
+                    label.control-label(for='alumnoPwd') Contraseña
+                    input#alumnoPwd.form-control.input-sm(name='alumnoPwd', placeholder='Contraseña', type='password')
+                  div.form-group
+                    label.control-label(for='alumnoNPwd') Nueva Contraseña
+                    input#alumnoNPwd.form-control.input-sm(name='alumnoNPwd', placeholder='Repetir contraseña', type='password')
+                  div.form-group
+                    label.control-label(for='alumnoColegio') Colegio
+                    div.input-group.has-success
+                      span.input-group-addon#alumnoColegio #[span.fa.fa-university(aria-hidden="true")]
+                      div#colegioSelection
+                        input#alumnoColegio-input(type="text" placeholder="Seleccione un colegio" required='' aria-describedby="alumnoColegio" data-toggle="modal" data-target="#modalAddColegio" value= alumno.colegio ? alumno.colegio.name : "").form-control
+                        input(type="hidden" name="colegioId" value= alumno.colegio ? alumno.colegio.id : "")
+                  div.form-group  
+                    label.control-label(for='alumnoGrado') Grado
+                    div.input-group.has-success
+                      span.input-group-addon#alumnoGrado #[span.fa.fa-university(aria-hidden="true")]
+                      div#gradoSelection
+                        input#alumnoGrado-input(type="text" placeholder="Seleccione un colegio" required='' aria-describedby="alumnoGrado" data-toggle="modal" data-target="#modalAddGrado" value= alumno.grado ? alumno.grado.division : "").form-control
+                        input(type="hidden" name="gradoId" value= alumno.grado ? alumno.grado.id : "")
+            
+            div.tab-pane.fade#contact
+              div.container-fluid
+                div.row
+                  div#contact-container
+                    div.contact
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoNombre') Nombre
+                          input#alumnoContactoNombre.form-control(name='alumnoContactoNombre', placeholder='Nombre', type='text' value=alumno.contact.nombre)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoApellido') Apellido
+                          input#alumnoContactoApellido.form-control(name='alumnoContactoApellido', placeholder='Apellido', type='text' value=alumno.contact.apellido)
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoEmail') Email
+                          input#alumnoContactoEmail.form-control(name='alumnoContactoEmail', placeholder='Email', type='email' value=alumno.contact.email)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoBirth') Cumpleaños
+                          input#alumnoContactoBirth.form-control.form_datetime(name='alumnoContactoBirth', placeholder='Cumpleaños', type='text' value=alumno.contact.birth)
+                            
+                      div.clearfix
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoTelefono') Telefono
+                          input#alumnoContactoTelefono.form-control(name='alumnoContactoTelefono', type='tel' value=alumno.contact.phone.p_number)
+                      div.col-md-6
+                        div.form-group
+                          label.control-label(for='alumnoContactoFax') Fax
+                          input#alumnoContactoFax.form-control(name='alumnoContactoFax', type='tel' value=alumno.contact.phone.f_number)
+                      div.clearfix
+                      div.col-md-12.text-center
+                        h3 Social
+                        div.form-group
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-facebook]
+                              input#alumnoContactoSocialFb.form-control(name='alumnoContactoSocialFb', placeholder='Facebook', type='text' value=alumno.contact.social.facebook)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-twitter]
+                              input#alumnoContactoSocialTw.form-control(name='alumnoContactoSocialTw', placeholder='Twitter', type='text' value=alumno.contact.social.twitter)
+                          div.col-md-4
+                            div.input-group
+                              span.input-group-addon #[span.fa.fa-skype]
+                              input#alumnoContactoSocialSk.form-control(name='alumnoContactoSocialSk', placeholder='Skype', type='text' value=alumno.contact.social.skype)
+                      div.clearfix
+                      hr(style="min-width:100%; background-color:#a1a1a1 !important; height:1px;")
+                            
+          div.pull-right
+            a(href=alumno.routes.root role="button").btn.btn-warning #[i.glyphicon.glyphicon-upload] Volver
+            button.btn.btn-success(type="submit") Cargar
+
+  +ModalAdminAddListWithRadio("modalAddColegio", alumno.lists.colegios, "Nombre", "nombre", "checkColegioToAdd", "addColegio")
+  +ModalAdminAddListWithRadio("modalAddGrado", alumno.lists.grados, "Division", "division", "checkalumnoToAdd", "addGrado")

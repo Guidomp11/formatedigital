@@ -1,0 +1,61 @@
+extends /includes/layout
+block navigation
+  include /includes/navigation
+block content
+  div.container
+    div.row.dashboard-title Estadisticas de !{alumno.nombrecompleto}
+    div.row.dashboard
+      include /flash
+      if !alumno.stats || alumno.stats.length == 0
+        div.text-center.alert.alert-warning
+          p.text-danger No hay estadisticas para este usuario.
+      else
+        div.row
+          div.col-md-offset-1.col-md-4
+            div.thumbnail
+              img(src=alumno.game.thumbnail)
+              div.caption
+                h3=alumno.game.title
+                p=alumno.game.type
+          div.col-md-6
+            div.card
+              div.card-title #[span.glyphicon.glyphicon-stats] Promedio
+              div.card-body#chart-prom
+                table.table.table-striped.table-bordered.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th % Aciertos
+                      th % Calculadora
+                  tbody
+                    td= alumno.stats.promedio.aciertos
+                    td= alumno.stats.promedio.calculadora
+          div.col-md-6
+            div.card
+              div.card-title #[span.fa.fa-gamepad] Niveles
+              div.card-body
+                table.table.table-striped.table-bordered.table-hover.text-center(data-page-length="25").table-results
+                  thead
+                    tr
+                      th Nivel
+                      th Intentos
+                      th Victorias
+                      th Calculadora
+                      th Estrellas
+                  tbody
+                    -var levelIndex = 1;
+                    each game in alumno.stats.general
+                      each level in game.level
+                        tr
+                          td= levelIndex
+                          td= level.attempts
+                          td= level.wins
+                          td= level.calc_times
+                          td= level.stars
+                        -levelIndex++;
+                  tfoot
+                    tr
+                      th Nivel
+                      th Intentos
+                      th Victorias
+                      th Calculadora
+                      th Estrellas

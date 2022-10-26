@@ -1,0 +1,64 @@
+extends /includes/layout
+include /mixins/admin_stats
+block styles  
+  include styles
+block scripts
+  include scripts
+block navigation
+  include navigation
+  include menu
+block content
+  div.canvas
+    div.container
+      div.row.dashboard-title
+          | Configuraciones
+      div.row.dashboard
+        include /flash
+        div.container-fluid
+          form(method="POST" action=settings.routes.install autocomplete="nope")
+            div.row
+              div.col-md-12
+                h4.text-center Informacion general
+                div.col-md-6.col-md-offset-3
+                  div.form-group
+                    label.control-label(for='installGeneralTitle') Titulo
+                    input.form-control.input-sm(name='installGeneralTitle', placeholder='Titulo del sitio', required='', type='text', value=settings.datos.site.titulo)
+                  div.form-group
+                    label.control-label(for='installGeneralSlogan') Slogan
+                    input.form-control.input-sm(name='installGeneralSlogan', placeholder='Slogan del sitio', required='', type='text', value=settings.datos.site.slogan)
+                  div.form-group
+                    label.control-label(for='installGeneralUrl') Direccion
+                    input.form-control.input-sm(name='installGeneralUrl', placeholder='Url del sitio (sin https)', required='', type='text', value=settings.datos.site.url)
+                  div.form-group
+                    label.control-label(for='installGeneralAdminMail') Email
+                    input.form-control.input-sm(name='installGeneralAdminMail', placeholder='Email de contacto', required='', type='email', value=settings.datos.site.contacto)
+            div.clearfix
+            hr
+            div.row
+              div.col-md-12
+                h4.text-center Seguridad
+                div.col-md-6.col-md-offset-3
+                  div.form-group
+                    label.control-label(for='securityCrypt') Clave de encriptacion general
+                    input.form-control.input-sm(name='securityCrypt', placeholder='Clave para encriptar textos.', type='text', readonly='', value=settings.datos.security.crypto.password)
+                    span.help-block Utilizada para aplicar una barrera de seguridad a los elementos sensibles mostrados en el front-end.
+                  div.form-group
+                    label.control-label(for='sessionSecret') Frase secreta (Sesion)
+                    input.form-control.input-sm(name='sessionSecret', placeholder='Frase para proteger las sesiones.', type='text', value=settings.datos.security.session.secret)
+                    span.help-block Frase que permite ofuscar la informacion de sesion de cada cuenta.
+                  div.form-group
+                    label.control-label(for='cookieSecret') Frase secreta (Cookie)
+                    input.form-control.input-sm(name='cookieSecret', placeholder='Frase para proteger las cookies.', type='text', value=settings.datos.security.cookies.secretKey)
+                    span.help-block Frase que permite ofuscar el contenido de la cookie al usuario.
+                  div.form-group
+                    label.control-label(for='cookieKey') Clave de Cookie
+                    input.form-control.input-sm(name='cookieKey', placeholder='Clave para proteger las cookies.', type='text', value=settings.datos.security.cookies.encryptKey)
+                    span.help-block Clave para darle una barrera de seguridad a la informacion ofuscada.
+                  div.form-group
+                    p.text-info.text-center #[strong ***Mayor complejidad de cada clave/frase brinda mas seguridad***]
+                  div.clearfix
+                  hr
+                  div.form-group
+                    p.text-danger.text-center La informacion introducida en este formulario debe permanecer privada en todo momento.
+                  div.form-group.text-center
+                    button.btn.btn-success(type="submit") Actualizar
