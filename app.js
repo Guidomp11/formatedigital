@@ -87,7 +87,7 @@ app.use(morgan('combined', {
     stream: accessLogStream
 }));
 
-console.log('DIRECCION: ', path.join(__dirname, Config.escuelas.upload_dir));
+console.log('DIRECCION: ', path.join(__dirname, 'bower_components'));
 
 /************************************************************************/
 /*                              END LOGS                                */
